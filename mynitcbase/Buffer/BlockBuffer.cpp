@@ -5,7 +5,7 @@
 
 BlockBuffer::BlockBuffer(int blockNum) {
   // initialise this.blockNum with the argument
-  this->blockNum=blockNum;
+  this->blockNum = blockNum;
 }
 
 // calls the parent class constructor
@@ -47,7 +47,7 @@ int RecBuffer::getRecord(union Attribute *rec, int slotNum) {
      - slotMap will be of size slotCount
   */
   int recordSize = attrCount * ATTR_SIZE;
-  unsigned char *slotPointer = buffer + HEADER_SIZE + slotCount + (recordSize*slotNum);
+  unsigned char *slotPointer = buffer + HEADER_SIZE + slotCount + (recordSize * slotNum);
 
   // load the record into the rec data structure
   memcpy(rec, slotPointer, recordSize);
