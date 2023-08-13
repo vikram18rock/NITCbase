@@ -12,18 +12,25 @@ int main(int argc, char *argv[]) {
   StaticBuffer buffer;
   OpenRelTable cache;
 
-  /*
-  for i = 0 and i = 1 (i.e RELCAT_RELID and ATTRCAT_RELID)
+  
+  for (int i = 0; i < ATTRCAT_RELID + 1; i++) {
 
-      get the relation catalog entry using RelCacheTable::getRelCatEntry()
-      printf("Relation: %s\n", relname);
+      // get the relation catalog entry using RelCacheTable::getRelCatEntry()
+      RelCatEntry rel;
+      RelCacheTable::getRelCatEntry(i, &rel);
+      printf("Relation: %s\n", rel.relName);
 
-      for j = 0 to numAttrs of the relation - 1
-          get the attribute catalog entry for (rel-id i, attribute offset j)
-           in attrCatEntry using AttrCacheTable::getAttrCatEntry()
+      for (int j = 0; j < rel.numAttrs; j++) {
+          /*
+            get the attribute catalog entry for (rel-id i, attribute offset j)
+            in attrCatEntry using AttrCacheTable::getAttrCatEntry()
+          */
+         AttrCatEntry *att;
+         AttrCacheTable::getAttrCatEntry(i, j, att);
 
-          printf("  %s: %s\n", attrName, attrType);
-  */
+          printf("  %s: %s\n", att->attrName, att->attrType);
+      }
+  }
 
   return 0;
 }
