@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
   OpenRelTable cache;
 
   
-  for (int i = 0; i < ATTRCAT_RELID + 1; i++) {
+  for (int i = 0; i <= ATTRCAT_RELID; i++) {
 
       // get the relation catalog entry using RelCacheTable::getRelCatEntry()
       RelCatEntry rel;
@@ -25,10 +25,11 @@ int main(int argc, char *argv[]) {
             get the attribute catalog entry for (rel-id i, attribute offset j)
             in attrCatEntry using AttrCacheTable::getAttrCatEntry()
           */
-         AttrCatEntry *att;
-         AttrCacheTable::getAttrCatEntry(i, j, att);
+          AttrCatEntry att;
+          AttrCacheTable::getAttrCatEntry(i, j, &att);
 
-          printf("  %s: %s\n", att->attrName, att->attrType);
+          const char *attrType = att.attrType == NUMBER ? "NUM" : "STR";
+          printf("  %s: %s\n", att.attrName, attrType);
       }
   }
 
