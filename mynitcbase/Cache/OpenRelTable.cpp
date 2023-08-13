@@ -40,6 +40,8 @@ OpenRelTable::OpenRelTable() {
   RelCacheTable::recordToRelCatEntry(relCatRecord, &relCacheEntry.relCatEntry);
   relCacheEntry.recId.block = RELCAT_BLOCK;
   relCacheEntry.recId.slot = RELCAT_SLOTNUM_FOR_ATTRCAT;
+
+  RelCacheTable::relCache[ATTRCAT_RELID] = (struct RelCacheEntry*)malloc(sizeof(RelCacheEntry));
   *(RelCacheTable::relCache[ATTRCAT_RELID]) = relCacheEntry;
 
   /************ Setting up Attribute cache entries ************/
@@ -58,26 +60,48 @@ OpenRelTable::OpenRelTable() {
   //    attrCacheEntry.recId.slot = i   (0 to 5)
   //    and attrCacheEntry.next appropriately
   // NOTE: allocate each entry dynamically using malloc
-  for (int i = 0; i < RELCAT_NO_ATTRS; i++)
-  {
-    
-    AttrCacheEntry attrCacheEntry;
-    attrCacheEntry.recId.block = ATTRCAT_BLOCK;
-    attrCacheEntry.recId.slot = i;
-    attrCacheEntry.next = 
+  AttrCacheEntry * head , * curr;
+  head = curr = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
+  int i;
+  for (i = 0; i < RELCAT_NO_ATTRS - 1; i++) {
+    attrCatBlock.getRecord(attrCatRecord, i);
+    AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
+    curr->recId.slot = i;
+    curr->recId.block = ATTRCAT_BLOCK;
+    curr->next = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
+    curr = curr->next;
   }
-  
-  
+  attrCatBlock.getRecord(attrCatRecord, i);
+  AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
+  curr->next = nullptr;
+  curr->recId.slot = RELCAT_NO_ATTRS - 1;
+  curr->recId.block = ATTRCAT_BLOCK;
+
   // set the next field in the last entry to nullptr
 
-  AttrCacheTable::attrCache[RELCAT_RELID] = /* head of the linked list */;
+  AttrCacheTable::attrCache[RELCAT_RELID] = head;
 
   /**** setting up Attribute Catalog relation in the Attribute Cache Table ****/
 
   // set up the attributes of the attribute cache similarly.
   // read slots 6-11 from attrCatBlock and initialise recId appropriately
+  head = curr = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
+  for (; i < RELCAT_NO_ATTRS + ATTRCAT_NO_ATTRS - 1; i++) {
+    attrCatBlock.getRecord(attrCatRecord, i);
+    AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
+    curr->recId.slot = i;
+    curr->recId.block = ATTRCAT_BLOCK;
+    curr->next = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
+    curr = curr->next;
+  }
+  attrCatBlock.getRecord(attrCatRecord, i);
+  AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
+  curr->next = nullptr;
+  curr->recId.slot = i;
+  curr->recId.block = ATTRCAT_BLOCK;
 
   // set the value at AttrCacheTable::attrCache[ATTRCAT_RELID]
+  AttrCacheTable::attrCache[ATTRCAT_RELID] = head;
 }
 
 OpenRelTable::~OpenRelTable() {

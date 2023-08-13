@@ -23,7 +23,7 @@ int AttrCacheTable::getAttrCatEntry(int relId, int attrOffset, AttrCatEntry* att
     if (entry->attrCatEntry.offset == attrOffset) {
 
       // copy entry->attrCatEntry to *attrCatBuf and return SUCCESS;
-      attrCatBuf = new AttrCatEntry(entry->attrCatEntry);
+      *attrCatBuf = entry->attrCatEntry;
       return SUCCESS;
     }
   }
@@ -43,6 +43,6 @@ void AttrCacheTable::recordToAttrCatEntry(union Attribute record[ATTRCAT_NO_ATTR
   strcpy(attrCatEntry->attrName, record[ATTRCAT_ATTR_NAME_INDEX].sVal);
   attrCatEntry->attrType = (int)record[ATTRCAT_ATTR_TYPE_INDEX].nVal;
   attrCatEntry->offset = (int)record[ATTRCAT_OFFSET_INDEX].nVal;
-  attrCatEntry->primaryFlag = (int)record[ATTRCAT_PRIMARY_FLAG_INDEX].nVal;
+  attrCatEntry->primaryFlag = (bool)record[ATTRCAT_PRIMARY_FLAG_INDEX].nVal;
   attrCatEntry->rootBlock = (int)record[ATTRCAT_ROOT_BLOCK_INDEX].nVal;
 }
