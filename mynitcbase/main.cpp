@@ -9,6 +9,7 @@
 int main(int argc, char *argv[]) {
   Disk disk_run;
   StaticBuffer buffer;
+  OpenRelTable Cache;
 
   // create objects for the relation catalog and attribute catalog
   RecBuffer relCatBuffer(RELCAT_BLOCK);
