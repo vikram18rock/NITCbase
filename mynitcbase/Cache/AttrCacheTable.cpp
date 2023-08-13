@@ -23,7 +23,7 @@ int AttrCacheTable::getAttrCatEntry(int relId, int attrOffset, AttrCatEntry* att
     if (entry->attrCatEntry.offset == attrOffset) {
 
       // copy entry->attrCatEntry to *attrCatBuf and return SUCCESS;
-      attrCatBuf = &AttrCatEntry(entry->attrCatEntry);
+      attrCatBuf = new AttrCatEntry(entry->attrCatEntry);
       return SUCCESS;
     }
   }

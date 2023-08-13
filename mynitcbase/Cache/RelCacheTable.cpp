@@ -43,4 +43,5 @@ void RelCacheTable::recordToRelCatEntry(union Attribute record[RELCAT_NO_ATTRS],
   relCatEntry->firstBlk = (int)record[RELCAT_FIRST_BLOCK_INDEX].nVal;
   relCatEntry->lastBlk = (int)record[RELCAT_LAST_BLOCK_INDEX].nVal;
   relCatEntry->numSlotsPerBlk = (int)record[RELCAT_NO_SLOTS_PER_BLOCK_INDEX].nVal;
+
 }
