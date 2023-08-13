@@ -71,7 +71,7 @@ void updateAttr(char relName[], char oldAttr[], char updAttr[]) {
     attrCatBuffer.getRecord(attrCatRecord, i);
 
     /* attribute catalog entry corresponds to the current relation */
-    if (strcmp(attrCatRecord[ATTRCAT_REL_NAME_INDEX].sVal, relName) == 0 && strcmp(attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, oldAttr)) {
+    if (strcmp(attrCatRecord[ATTRCAT_REL_NAME_INDEX].sVal, relName) == 0 && strcmp(attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, oldAttr) == 0) {
       strcpy(attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, updAttr);
       attrCatBuffer.setRecord(attrCatRecord, i);
       std::cout << "Updated\n"; 
