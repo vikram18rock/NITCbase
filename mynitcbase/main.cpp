@@ -9,51 +9,20 @@
 int main(int argc, char *argv[]) {
   Disk disk_run;
   StaticBuffer buffer;
-  OpenRelTable Cache;
+  OpenRelTable cache;
 
-  // create objects for the relation catalog and attribute catalog
-  RecBuffer relCatBuffer(RELCAT_BLOCK);
-  RecBuffer attrCatBuffer(ATTRCAT_BLOCK);
+  /*
+  for i = 0 and i = 1 (i.e RELCAT_RELID and ATTRCAT_RELID)
 
-  HeadInfo relCatHeader;
-  HeadInfo attrCatHeader;
+      get the relation catalog entry using RelCacheTable::getRelCatEntry()
+      printf("Relation: %s\n", relname);
 
-  // load the headers of both the blocks into relCatHeader and attrCatHeader.
-  // (we will implement these functions later)
-  relCatBuffer.getHeader(&relCatHeader);
-  attrCatBuffer.getHeader(&attrCatHeader);
+      for j = 0 to numAttrs of the relation - 1
+          get the attribute catalog entry for (rel-id i, attribute offset j)
+           in attrCatEntry using AttrCacheTable::getAttrCatEntry()
 
-  for (int i = 0, noOfAttrs = 0; i < relCatHeader.numEntries; i++) {
- 
-    Attribute relCatRecord[RELCAT_NO_ATTRS]; // will store the record from the relation catalog
-
-    relCatBuffer.getRecord(relCatRecord, i);
-
-    printf("Relation: %s\n", relCatRecord[RELCAT_REL_NAME_INDEX].sVal);
-
-    for (int j = 0; j < relCatRecord[RELCAT_NO_ATTRIBUTES_INDEX].nVal; j++, noOfAttrs++) {
-
-      // declare attrCatRecord and load the attribute catalog entry into it
-      Attribute attrCatRecord[ATTRCAT_NO_ATTRS];
-      attrCatBuffer.getRecord(attrCatRecord, noOfAttrs);
-
-      /* attribute catalog entry corresponds to the current relation */
-      if (strcmp(attrCatRecord[ATTRCAT_REL_NAME_INDEX].sVal, relCatRecord[RELCAT_REL_NAME_INDEX].sVal) == 0) {
-        const char *attrType = attrCatRecord[ATTRCAT_ATTR_TYPE_INDEX].nVal == NUMBER ? "NUM" : "STR";
-        /* get the attribute name */
-        printf("  %s: %s\n", attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, attrType);
-      }
-      if(noOfAttrs == attrCatHeader.numSlots - 1) {
-        // re initializing the slot index
-        noOfAttrs = -1;
-        // updating the buffer block with next block;
-        attrCatBuffer = RecBuffer(attrCatHeader.rblock);
-        // updating the header
-        attrCatBuffer.getHeader(&attrCatHeader);
-      }
-    }
-    printf("\n");
-  }
+          printf("  %s: %s\n", attrName, attrType);
+  */
 
   return 0;
 }
