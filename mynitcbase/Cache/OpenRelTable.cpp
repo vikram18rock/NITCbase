@@ -116,7 +116,15 @@ and open the appropriate one.
 int OpenRelTable::getRelId(char relName[ATTR_SIZE]) {
 
   // if relname is RELCAT_RELNAME, return RELCAT_RELID
+  if (strcmp(relName, RELCAT_RELNAME) == 0)
+  {
+    return RELCAT_RELID;
+  }
+  
   // if relname is ATTRCAT_RELNAME, return ATTRCAT_RELID
+  if(strcmp(relName, ATTRCAT_RELNAME) == 0) {
+    return ATTRCAT_RELID;
+  }
 
   return E_RELNOTOPEN;
 }
