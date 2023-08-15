@@ -73,6 +73,8 @@ int AttrCacheTable::getAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCat
 
       return SUCCESS;
     }
+
+    entry = entry->next;
   }
 
   // no attribute with name attrName for the relation

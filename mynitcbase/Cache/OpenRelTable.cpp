@@ -71,7 +71,7 @@ OpenRelTable::OpenRelTable() {
     curr->next = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
     curr = curr->next;
   }
-  attrCatBlock.getRecord(attrCatRecord, i);
+  attrCatBlock.getRecord(attrCatRecord, i++);
   AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
   curr->next = nullptr;
   curr->recId.slot = RELCAT_NO_ATTRS - 1;
