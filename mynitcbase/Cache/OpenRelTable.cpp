@@ -88,6 +88,7 @@ OpenRelTable::OpenRelTable() {
   curr->next = nullptr;
   curr->recId.slot = RELCAT_NO_ATTRS - 1;
   curr->recId.block = ATTRCAT_BLOCK;
+  i++;
 
   // set the next field in the last entry to nullptr
 
@@ -111,6 +112,7 @@ OpenRelTable::OpenRelTable() {
   curr->next = nullptr;
   curr->recId.slot = i;
   curr->recId.block = ATTRCAT_BLOCK;
+  i++;
 
   // set the value at AttrCacheTable::attrCache[ATTRCAT_RELID]
   AttrCacheTable::attrCache[ATTRCAT_RELID] = head;
@@ -132,6 +134,7 @@ OpenRelTable::OpenRelTable() {
   curr->next = nullptr;
   curr->recId.slot = i;
   curr->recId.block = ATTRCAT_BLOCK;
+  i++;
 
   // set the value at AttrCacheTable::attrCache[ATTRCAT_RELID+1]
   AttrCacheTable::attrCache[ATTRCAT_RELID + 1] = head;
