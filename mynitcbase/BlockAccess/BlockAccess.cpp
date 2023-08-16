@@ -25,7 +25,7 @@ RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], union Attri
 
         // block = first record block of the relation
         // slot = 0
-        block = RELCAT_BLOCK;
+        block = entry.firstBlk;
         slot = 0;
     }
     else
@@ -116,9 +116,10 @@ RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], union Attri
             the record id of the record that satisfies the given condition
             (use RelCacheTable::setSearchIndex function)
             */
+            prevRecId = RecId{block, slot};
             RelCacheTable::setSearchIndex(relId, &prevRecId);
 
-            return RecId{block, slot};
+            return prevRecId;
         }
 
         slot++;

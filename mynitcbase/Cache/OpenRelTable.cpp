@@ -71,11 +71,12 @@ OpenRelTable::OpenRelTable() {
     curr->next = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
     curr = curr->next;
   }
-  attrCatBlock.getRecord(attrCatRecord, i++);
+  attrCatBlock.getRecord(attrCatRecord, i);
   AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
   curr->next = nullptr;
-  curr->recId.slot = RELCAT_NO_ATTRS - 1;
+  curr->recId.slot = i;
   curr->recId.block = ATTRCAT_BLOCK;
+  i++;
 
   // set the next field in the last entry to nullptr
 

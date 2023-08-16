@@ -95,6 +95,11 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
       recblock.getRecord(record, searchRes.slot);
 
       // print the attribute values in the same format as above
+      for (int i = 0; i < relCatEntry.numAttrs; i++)
+      {
+        printf(" %s |", record[i].sVal);
+      }
+      printf("\n");
 
     } 
     else {
