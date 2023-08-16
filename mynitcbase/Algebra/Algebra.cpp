@@ -5,7 +5,7 @@
 
 
 // will return if a string can be parsed as a floating point number
-bool isNumber(char *str) {
+bool isNumber(char* str) {
   int len;
   float ignore;
   /*
@@ -50,10 +50,12 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
   if (type == NUMBER) {
     if (isNumber(strVal)) {       // the isNumber() function is implemented below
       attrVal.nVal = atof(strVal);
-    } else {
+    }
+    else {
       return E_ATTRTYPEMISMATCH;
     }
-  } else if (type == STRING) {
+  }
+  else if (type == STRING) {
     strcpy(attrVal.sVal, strVal);
   }
 
@@ -95,13 +97,21 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
       recblock.getRecord(record, searchRes.slot);
 
       // print the attribute values in the same format as above
-      for (int i = 0; i < relCatEntry.numAttrs; i++)
-      {
-        printf(" %s |", record[i].sVal);
+      for (int i = 0; i < relCatEntry.numAttrs; i++) {
+        // get the attrCatEntry for the srcRelId with corresponding offsets
+        AttrCatEntry attrCatEntry;
+        AttrCacheTable::getAttrCatEntry(srcRelId, i, &attrCatEntry);
+
+        // with the attrCatEntry we can get the attrType
+        // print correspondingly
+        if (attrCatEntry.attrType == STRING)
+          printf(" %s |", record[i].sVal);
+        else
+          printf(" %d |", (int)record[i].nVal);
       }
       printf("\n");
 
-    } 
+    }
     else {
 
       // (all records over)
