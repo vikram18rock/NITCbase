@@ -120,7 +120,7 @@ OpenRelTable::OpenRelTable() {
   /**** setting up Student Catalog relation in the Attribute Cache Table ****/
 
   head = curr = (AttrCacheEntry *)malloc(sizeof(AttrCacheEntry));
-  for (; i < RELCAT_NO_ATTRS + ATTRCAT_NO_ATTRS + ATTRCAT_NO_ATTRS + 1 - 1; i++)
+  for (; i < RELCAT_NO_ATTRS + ATTRCAT_NO_ATTRS + relCacheEntry.relCatEntry.numAttrs; i++)
   {
       attrCatBlock.getRecord(attrCatRecord, i);
       AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
