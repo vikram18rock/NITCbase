@@ -99,7 +99,7 @@ OpenRelTable::OpenRelTable() {
   // set up the attributes of the attribute cache similarly.
   // read slots 6-11 from attrCatBlock and initialise recId appropriately
   head = curr = (AttrCacheEntry*)malloc(sizeof(AttrCacheEntry));
-  for (; i < RELCAT_NO_ATTRS + ATTRCAT_NO_ATTRS; i++) {
+  for (; i < RELCAT_NO_ATTRS + ATTRCAT_NO_ATTRS - 1; i++) {
     attrCatBlock.getRecord(attrCatRecord, i);
     AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
     curr->recId.slot = i;
@@ -118,9 +118,9 @@ OpenRelTable::OpenRelTable() {
   AttrCacheTable::attrCache[ATTRCAT_RELID] = head;
 
   /**** setting up Student Catalog relation in the Attribute Cache Table ****/
-
+  i = 12;
   head = curr = (AttrCacheEntry *)malloc(sizeof(AttrCacheEntry));
-  for (; i < RELCAT_NO_ATTRS + ATTRCAT_NO_ATTRS + ATTRCAT_NO_ATTRS - 1; i++)
+  for (; i < RELCAT_NO_ATTRS + ATTRCAT_NO_ATTRS + relCacheEntry.relCatEntry.numAttrs - 1; i++)
   {
       attrCatBlock.getRecord(attrCatRecord, i);
       AttrCacheTable::recordToAttrCatEntry(attrCatRecord, &curr->attrCatEntry);
@@ -161,6 +161,9 @@ int OpenRelTable::getRelId(char relName[ATTR_SIZE]) {
   // if relname is ATTRCAT_RELNAME, return ATTRCAT_RELID
   if(strcmp(relName, ATTRCAT_RELNAME) == 0) {
     return ATTRCAT_RELID;
+  }
+  if (strcmp(relName, "Students") == 0) {
+    return 2;
   }
 
   return E_RELNOTOPEN;
