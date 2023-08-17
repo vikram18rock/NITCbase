@@ -246,6 +246,8 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
   RelCacheTable::getRelCatEntry(ATTRCAT_RELID, &relCatEntry);
   AttrCacheTable::getAttrCatEntry(ATTRCAT_RELID, ATTRCAT_REL_NAME_INDEX, &attrCatEntry);
   strcpy(attrVal.sVal, relName);
+  char attrName[ATTR_SIZE];
+  strcpy(attrName, ATTRCAT_ATTR_RELNAME);
 
   /*iterate over all the entries in the Attribute Catalog corresponding to each
   attribute of the relation relName by multiple calls of BlockAccess::linearSearch()
@@ -260,7 +262,7 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
       /* let attrcatRecId store a valid record id an entry of the relation, relName,
       in the Attribute Catalog.*/
       RecId attrcatRecId;
-      attrcatRecId = BlockAccess::linearSearch(ATTRCAT_RELID, relCacheEntry.relCatEntry.relName, attrVal, EQ);
+      attrcatRecId = BlockAccess::linearSearch(ATTRCAT_RELID, attrName, attrVal, EQ);
 
       /* read the record entry corresponding to attrcatRecId and create an
       Attribute Cache entry on it using RecBuffer::getRecord() and
