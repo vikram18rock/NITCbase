@@ -40,11 +40,26 @@ int renameRel(char oldRelName[ATTR_SIZE], char newRelName[ATTR_SIZE]) {
         // return E_NOTPERMITTED
         // (check if the relation names are either "RELATIONCAT" and "ATTRIBUTECAT".
         // you may use the following constants: RELCAT_NAME and ATTRCAT_NAME)
+    if (
+      strcmp(newRelName, RELCAT_RELNAME) == 0 && 
+      strcmp(newRelName, ATTRCAT_RELNAME) == 0 &&
+      strcmp(oldRelName, RELCAT_RELNAME) == 0 && 
+      strcmp(oldRelName, ATTRCAT_RELNAME) == 0
+    ) {
+      return E_NOTPERMITTED;
+    }
+    
 
     // if the relation is open
     //    (check if OpenRelTable::getRelId() returns E_RELNOTOPEN)
     //    return E_RELOPEN
+    int retVal = OpenRelTable::getRelId(oldRelName);
+    if(retVal == E_RELOPEN) {
+      return E_RELOPEN;
+    }
 
     // retVal = BlockAccess::renameRelation(oldRelName, newRelName);
+    retVal = BlockAccess::renameRelation(oldRelName, newRelName);
     // return retVal
+    return retVal;
 }
