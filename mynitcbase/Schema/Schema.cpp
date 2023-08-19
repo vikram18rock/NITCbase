@@ -62,3 +62,20 @@ int renameRel(char oldRelName[ATTR_SIZE], char newRelName[ATTR_SIZE]) {
   // return retVal
   return retVal;
 }
+
+/* This method changes the name of an attribute/column present in
+ a specified relation, to new name as specified in arguments. */
+int Schema::renameAttr(char *relName, char *oldAttrName, char *newAttrName) {
+    // if the relName is either Relation Catalog or Attribute Catalog,
+        // return E_NOTPERMITTED
+        // (check if the relation names are either "RELATIONCAT" and "ATTRIBUTECAT".
+        // you may use the following constants: RELCAT_NAME and ATTRCAT_NAME)
+
+    // if the relation is open
+        //    (check if OpenRelTable::getRelId() returns E_RELNOTOPEN)
+        //    return E_RELOPEN
+
+    // Call BlockAccess::renameAttribute with appropriate arguments.
+
+    // return the value returned by the above renameAttribute() call
+}
