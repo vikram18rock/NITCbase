@@ -227,11 +227,17 @@ int BlockAccess::renameAttribute(char relName[ATTR_SIZE], char oldName[ATTR_SIZE
     // Search for the relation with name relName in relation catalog using linearSearch()
     // If relation with name relName does not exist (search returns {-1,-1})
     //    return E_RELNOTEXIST;
-    // RecId searchRes = linearSearch(RELCAT_RELID, RELCAT_ATTR_RELNAME, relNameAttr, EQ);
-    
+    char attrName[ATTR_SIZE];
+    strcpy(attrName, RELCAT_ATTR_RELNAME);
+    RecId searchRes = linearSearch(RELCAT_RELID, attrName, relNameAttr, EQ);
+
+    if (searchRes.block == -1 && searchRes.slot == -1) {
+        return E_RELNOTEXIST;
+    }
 
     /* reset the searchIndex of the attribute catalog using
        RelCacheTable::resetSearchIndex() */
+    RelCacheTable::resetSearchIndex(ATTRCAT_RELID);
 
     /* declare variable attrToRenameRecId used to store the attr-cat recId
     of the attribute to rename */
@@ -242,29 +248,51 @@ int BlockAccess::renameAttribute(char relName[ATTR_SIZE], char oldName[ATTR_SIZE
        relation to find the required attribute */
     while (true) {
         // linear search on the attribute catalog for RelName = relNameAttr
+        searchRes = linearSearch(ATTRCAT_RELID, attrName, relNameAttr, EQ);
+        /* NOTE --> Here attrName need not be loaded again from ATTRCAT_ATTR_RELNAME, 
+        because both are same */
 
         // if there are no more attributes left to check (linearSearch returned {-1,-1})
         //     break;
+        if (searchRes.block == -1 && searchRes.slot == -1) {
+            break;
+        }
 
         /* Get the record from the attribute catalog using RecBuffer.getRecord
           into attrCatEntryRecord */
+        RecBuffer attrCatBlock(searchRes.block);
+        attrCatBlock.getRecord(attrCatEntryRecord, searchRes.slot);
 
         // if attrCatEntryRecord.attrName = oldName
         //     attrToRenameRecId = block and slot of this record
+        if (strcmp(attrCatEntryRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, oldName) == 0) {
+            attrToRenameRecId = searchRes;
+        }
 
         // if attrCatEntryRecord.attrName = newName
         //     return E_ATTREXIST;
+        if (strcmp(attrCatEntryRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, newName) == 0) {
+            return E_ATTREXIST;
+        }
+        
     }
 
     // if attrToRenameRecId == {-1, -1}
     //     return E_ATTRNOTEXIST;
-
+    if (attrToRenameRecId.block == -1 && attrToRenameRecId.slot == -1)
+    {
+        return E_ATTRNOTEXIST;
+    }
 
     // Update the entry corresponding to the attribute in the Attribute Catalog Relation.
     /*   declare a RecBuffer for attrToRenameRecId.block and get the record at
          attrToRenameRecId.slot */
     //   update the AttrName of the record with newName
     //   set back the record with RecBuffer.setRecord
+    RecBuffer attrBlock(attrToRenameRecId.block);
+    attrBlock.getRecord(attrCatEntryRecord, attrToRenameRecId.slot);
+    strcpy(attrCatEntryRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, newName);
+    attrBlock.setRecord(attrCatEntryRecord, attrToRenameRecId.slot);
 
     return SUCCESS;
 }
