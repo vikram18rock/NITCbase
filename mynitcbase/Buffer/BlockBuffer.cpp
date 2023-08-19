@@ -91,10 +91,28 @@ int BlockBuffer::loadBlockAndGetBufferPtr(unsigned char** buffPtr) {
 		// the blockNum is invalid
 
 		// Read the block into the free buffer using readBlock()
+	if (bufferNum != E_BLOCKNOTINBUFFER) {
+		StaticBuffer::metainfo[bufferNum].timeStamp = 0;
+
+		for (int i = 0; i < BUFFER_CAPACITY; i++) {
+			if (i != bufferNum && !StaticBuffer::metainfo[i].free) {
+				StaticBuffer::metainfo[i].timeStamp++;
+			}
+		}
+	}
+	else {
+		int ret = StaticBuffer::getFreeBuffer(this->blockNum);
+		if (ret == E_OUTOFBOUND) {
+			return E_OUTOFBOUND;
+		}
+		Disk::readBlock(ret, this->blockNum);
+	}
 
 	// store the pointer to this buffer (blocks[bufferNum]) in *buffPtr
+	*buffPtr = StaticBuffer::blocks[bufferNum];
 
 	// return SUCCESS;
+	return SUCCESS;
 }
 
 /* used to get the slotmap from a record block
