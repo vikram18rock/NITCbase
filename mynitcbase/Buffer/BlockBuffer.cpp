@@ -101,11 +101,11 @@ int BlockBuffer::loadBlockAndGetBufferPtr(unsigned char** buffPtr) {
 		}
 	}
 	else {
-		int ret = StaticBuffer::getFreeBuffer(this->blockNum);
-		if (ret == E_OUTOFBOUND) {
+		bufferNum = StaticBuffer::getFreeBuffer(this->blockNum);
+		if (bufferNum == E_OUTOFBOUND) {
 			return E_OUTOFBOUND;
 		}
-		Disk::readBlock(ret, this->blockNum);
+		Disk::readBlock(StaticBuffer::blocks[bufferNum], this->blockNum);
 	}
 
 	// store the pointer to this buffer (blocks[bufferNum]) in *buffPtr

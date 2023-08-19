@@ -59,6 +59,7 @@ int StaticBuffer::getFreeBuffer(int blockNum) {
     if (metainfo[i].free) {
       bufferNum = i;
       isFree = 1;
+      break;
     }
   }
 
