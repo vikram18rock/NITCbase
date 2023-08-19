@@ -6,18 +6,26 @@ struct BufferMetaInfo StaticBuffer::metainfo[BUFFER_CAPACITY];
 
 StaticBuffer::StaticBuffer() {
 
-  // initialise all blocks as free
   for (int bufferIndex = 0; bufferIndex < BUFFER_CAPACITY; bufferIndex++) {
+    // set metainfo[bufferindex] with the following values
+    //   free = true
+    //   dirty = false
+    //   timestamp = -1
+    //   blockNum = -1
     metainfo[bufferIndex].free = true;
+    metainfo[bufferIndex].dirty = false;
+    metainfo[bufferIndex].timeStamp = -1;
+    metainfo[bufferIndex].blockNum = -1;
   }
 }
 
-/*
-At this stage, we are not writing back from the buffer to the disk since we are
-not modifying the buffer. So, we will define an empty destructor for now. In
-subsequent stages, we will implement the write-back functionality here.
-*/
-StaticBuffer::~StaticBuffer() {}
+// write back all modified blocks on system exit
+StaticBuffer::~StaticBuffer() {
+  /*iterate through all the buffer blocks,
+    write back blocks with metainfo as free=false,dirty=true
+    using Disk::writeBlock()
+    */
+}
 
 int StaticBuffer::getFreeBuffer(int blockNum) {
   if (blockNum < 0 || blockNum > DISK_BLOCKS) {
@@ -65,4 +73,32 @@ int StaticBuffer::getBufferNum(int blockNum) {
 
   // if block is not in the buffer
   return E_BLOCKNOTINBUFFER;
+}
+
+int StaticBuffer::setDirtyBit(int blockNum){
+    // find the buffer index corresponding to the block using getBufferNum().
+    int bufferNum = getBufferNum(blockNum);
+
+    // if block is not present in the buffer (bufferNum = E_BLOCKNOTINBUFFER)
+    //     return E_BLOCKNOTINBUFFER
+    if (bufferNum == E_BLOCKNOTINBUFFER) {
+      return E_BLOCKNOTINBUFFER;
+    }
+
+    // if blockNum is out of bound (bufferNum = E_OUTOFBOUND)
+    //     return E_OUTOFBOUND
+
+    // else
+    //     (the bufferNum is valid)
+    //     set the dirty bit of that buffer to true in metainfo
+
+    if (bufferNum == E_OUTOFBOUND) {
+      return E_OUTOFBOUND;
+    }
+    else {
+      metainfo[bufferNum].dirty = 1;
+    }
+    
+    // return SUCCESS
+    return SUCCESS;
 }
