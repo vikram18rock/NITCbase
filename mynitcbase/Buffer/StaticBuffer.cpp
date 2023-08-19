@@ -50,27 +50,42 @@ int StaticBuffer::getFreeBuffer(int blockNum) {
   }
 
   // let bufferNum be used to store the buffer number of the free/freed buffer.
-  int bufferNum = -1;
+  int bufferNum = 0, isFree = 0;
 
   // iterate through metainfo and check if there is any buffer free
 
   // if a free buffer is available, set bufferNum = index of that free buffer.
+  for (int i = 0; i < BUFFER_CAPACITY; i++) {
+    if (metainfo[i].free) {
+      bufferNum = i;
+      isFree = 1;
+    }
+  }
 
   // if a free buffer is not available,
   //     find the buffer with the largest timestamp
   //     IF IT IS DIRTY, write back to the disk using Disk::writeBlock()
   //     set bufferNum = index of this buffer
-  for (int i = 0; i < BUFFER_CAPACITY; i++) {
-    if (metainfo[i].free) {
+  for (int i = 0; !isFree && i < BUFFER_CAPACITY; i++)
+  {
+    if (metainfo[i].timeStamp > metainfo[bufferNum].timeStamp)
+    {
       bufferNum = i;
-      break;
     }
   }
-
+  if (metainfo[bufferNum].dirty)
+  {
+    Disk::writeBlock(blocks[bufferNum], metainfo[bufferNum].blockNum);
+    metainfo[bufferNum].dirty = false;
+  }
+  
   // update the metaInfo entry corresponding to bufferNum with
   // free:false, dirty:false, blockNum:the input block number, timeStamp:0.
-
+  metainfo[bufferNum].free = false;
+  metainfo[bufferNum].timeStamp = 0;
+  metainfo[bufferNum].blockNum = blockNum;
   // return the bufferNum.
+  return bufferNum;
 }
 
 /* Get the buffer index where a particular block is stored
