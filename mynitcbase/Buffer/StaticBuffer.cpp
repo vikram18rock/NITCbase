@@ -25,30 +25,52 @@ StaticBuffer::~StaticBuffer() {
     write back blocks with metainfo as free=false,dirty=true
     using Disk::writeBlock()
     */
-}
-
-int StaticBuffer::getFreeBuffer(int blockNum) {
-  if (blockNum < 0 || blockNum > DISK_BLOCKS) {
-    return E_OUTOFBOUND;
-  }
-  int allocatedBuffer;
-
-  // iterate through all the blocks in the StaticBuffer
-  // find the first free block in the buffer (check metainfo)
-  // assign allocatedBuffer = index of the free block
-  for (int i = 0; i < BUFFER_CAPACITY; i++)
-  {
-    if (metainfo[i].free)
-    {
-        allocatedBuffer = i;
-        break;
+  for (int i = 0; i < BUFFER_CAPACITY; i++) {
+    if (!metainfo[i].free && metainfo[i].dirty) {
+      Disk::writeBlock(blocks[i], metainfo[i].blockNum);
     }
   }
 
-  metainfo[allocatedBuffer].free = false;
-  metainfo[allocatedBuffer].blockNum = blockNum;
+}
 
-  return allocatedBuffer;
+/* Assigns a buffer to the block and returns the buffer number. If no free
+   buffer block is found, the least recently used (LRU) buffer block is replaced. */
+int StaticBuffer::getFreeBuffer(int blockNum) {
+  // Check if blockNum is valid (non zero and less than DISK_BLOCKS)
+  // and return E_OUTOFBOUND if not valid.
+  if (blockNum < 0 || blockNum >= DISK_BLOCKS) {
+    return E_OUTOFBOUND;
+  }
+
+  // increase the timeStamp in metaInfo of all occupied buffers.
+  for (int i = 0; i < BUFFER_CAPACITY; i++) {
+    if (!metainfo[i].free) {
+      metainfo[i].timeStamp++;
+    }
+  }
+
+  // let bufferNum be used to store the buffer number of the free/freed buffer.
+  int bufferNum = -1;
+
+  // iterate through metainfo and check if there is any buffer free
+
+  // if a free buffer is available, set bufferNum = index of that free buffer.
+
+  // if a free buffer is not available,
+  //     find the buffer with the largest timestamp
+  //     IF IT IS DIRTY, write back to the disk using Disk::writeBlock()
+  //     set bufferNum = index of this buffer
+  for (int i = 0; i < BUFFER_CAPACITY; i++) {
+    if (metainfo[i].free) {
+      bufferNum = i;
+      break;
+    }
+  }
+
+  // update the metaInfo entry corresponding to bufferNum with
+  // free:false, dirty:false, blockNum:the input block number, timeStamp:0.
+
+  // return the bufferNum.
 }
 
 /* Get the buffer index where a particular block is stored
@@ -61,11 +83,11 @@ int StaticBuffer::getBufferNum(int blockNum) {
   {
     return E_OUTOFBOUND;
   }
-  
+
   // find and return the bufferIndex which corresponds to blockNum (check metainfo)
   for (int i = 0; i < BUFFER_CAPACITY; i++)
   {
-    if(metainfo[i].blockNum == blockNum)
+    if (metainfo[i].blockNum == blockNum)
     {
       return i;
     }
@@ -75,30 +97,30 @@ int StaticBuffer::getBufferNum(int blockNum) {
   return E_BLOCKNOTINBUFFER;
 }
 
-int StaticBuffer::setDirtyBit(int blockNum){
-    // find the buffer index corresponding to the block using getBufferNum().
-    int bufferNum = getBufferNum(blockNum);
+int StaticBuffer::setDirtyBit(int blockNum) {
+  // find the buffer index corresponding to the block using getBufferNum().
+  int bufferNum = getBufferNum(blockNum);
 
-    // if block is not present in the buffer (bufferNum = E_BLOCKNOTINBUFFER)
-    //     return E_BLOCKNOTINBUFFER
-    if (bufferNum == E_BLOCKNOTINBUFFER) {
-      return E_BLOCKNOTINBUFFER;
-    }
+  // if block is not present in the buffer (bufferNum = E_BLOCKNOTINBUFFER)
+  //     return E_BLOCKNOTINBUFFER
+  if (bufferNum == E_BLOCKNOTINBUFFER) {
+    return E_BLOCKNOTINBUFFER;
+  }
 
-    // if blockNum is out of bound (bufferNum = E_OUTOFBOUND)
-    //     return E_OUTOFBOUND
+  // if blockNum is out of bound (bufferNum = E_OUTOFBOUND)
+  //     return E_OUTOFBOUND
 
-    // else
-    //     (the bufferNum is valid)
-    //     set the dirty bit of that buffer to true in metainfo
+  // else
+  //     (the bufferNum is valid)
+  //     set the dirty bit of that buffer to true in metainfo
 
-    if (bufferNum == E_OUTOFBOUND) {
-      return E_OUTOFBOUND;
-    }
-    else {
-      metainfo[bufferNum].dirty = 1;
-    }
-    
-    // return SUCCESS
-    return SUCCESS;
+  if (bufferNum == E_OUTOFBOUND) {
+    return E_OUTOFBOUND;
+  }
+  else {
+    metainfo[bufferNum].dirty = 1;
+  }
+
+  // return SUCCESS
+  return SUCCESS;
 }
