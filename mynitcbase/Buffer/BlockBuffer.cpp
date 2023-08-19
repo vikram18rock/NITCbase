@@ -66,28 +66,35 @@ int RecBuffer::getRecord(union Attribute* rec, int slotNum) {
 	return SUCCESS;
 }
 
-/*
-Used to load a block to the buffer and get a pointer to it.
-NOTE: this function expects the caller to allocate memory for the argument
-*/
+/* NOTE: This function will NOT check if the block has been initialised as a
+   record or an index block. It will copy whatever content is there in that
+   disk block to the buffer.
+   Also ensure that all the methods accessing and updating the block's data
+   should call the loadBlockAndGetBufferPtr() function before the access or
+   update is done. This is because the block might not be present in the
+   buffer due to LRU buffer replacement. So, it will need to be bought back
+   to the buffer before any operations can be done.
+ */
 int BlockBuffer::loadBlockAndGetBufferPtr(unsigned char** buffPtr) {
-	// check whether the block is already present in the buffer using StaticBuffer.getBufferNum()
+	/* check whether the block is already present in the buffer
+	   using StaticBuffer.getBufferNum() */
 	int bufferNum = StaticBuffer::getBufferNum(this->blockNum);
 
-	if (bufferNum == E_BLOCKNOTINBUFFER) {
-		bufferNum = StaticBuffer::getFreeBuffer(this->blockNum);
+	// if present (!=E_BLOCKNOTINBUFFER),
+		// set the timestamp of the corresponding buffer to 0 and increment the
+		// timestamps of all other occupied buffers in BufferMetaInfo.
 
-		if (bufferNum == E_OUTOFBOUND) {
-			return E_OUTOFBOUND;
-		}
+	// else
+		// get a free buffer using StaticBuffer.getFreeBuffer()
 
-		Disk::readBlock(StaticBuffer::blocks[bufferNum], this->blockNum);
-	}
+		// if the call returns E_OUTOFBOUND, return E_OUTOFBOUND here as
+		// the blockNum is invalid
+
+		// Read the block into the free buffer using readBlock()
 
 	// store the pointer to this buffer (blocks[bufferNum]) in *buffPtr
-	*buffPtr = StaticBuffer::blocks[bufferNum];
 
-	return SUCCESS;
+	// return SUCCESS;
 }
 
 /* used to get the slotmap from a record block
@@ -192,7 +199,7 @@ int RecBuffer::setRecord(union Attribute* rec, int slotNum) {
 		(hint: a record will be of size ATTR_SIZE * numAttrs)
 	*/
 	int recordSize = attrCount * ATTR_SIZE;
-	unsigned char * slotPointer = bufferPtr + HEADER_SIZE + slotCount + (slotNum * recordSize);
+	unsigned char* slotPointer = bufferPtr + HEADER_SIZE + slotCount + (slotNum * recordSize);
 
 	memcpy(slotPointer, rec, recordSize);
 
@@ -203,7 +210,7 @@ int RecBuffer::setRecord(union Attribute* rec, int slotNum) {
 		in buffer and the blockNum is valid. If the call does fail, there
 		exists some other issue in the code) */
 
-	// return SUCCESS
-	
+		// return SUCCESS
+
 	return SUCCESS;
 }
