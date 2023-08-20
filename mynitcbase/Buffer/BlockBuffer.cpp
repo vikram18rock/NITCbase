@@ -327,12 +327,12 @@ int BlockBuffer::getFreeBlock(int blockType){
     // pblock: -1, lblock: -1, rblock: -1, numEntries: 0, numAttrs: 0, numSlots: 0
     // to the setHeader() function.
 	HeadInfo head;
-	head->pblock = -1;
-	head->lblock = -1;
-	head->rblock = -1;
-	head->numEntries = 0;
-	head->numAttrs = 0;
-	head->numSlots = 0;
+	head.pblock = -1;
+	head.lblock = -1;
+	head.rblock = -1;
+	head.numEntries = 0;
+	head.numAttrs = 0;
+	head.numSlots = 0;
 	this->setHeader(&head);
 
     // update the block type of the block to the input block type using setBlockType().

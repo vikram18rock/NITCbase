@@ -1,6 +1,7 @@
 #include "RelCacheTable.h"
 
 #include <cstring>
+#include <cstdlib>
 
 RelCacheEntry* RelCacheTable::relCache[MAX_OPEN];
 
@@ -94,20 +95,23 @@ int RelCacheTable::resetSearchIndex(int relId) {
 /* Sets the Relation Catalog entry corresponding to the specified relation in the Relation Cache Table.
    NOTE: The caller should allocate memory for the `struct RelCatEntry` before calling the function. */
 int RelCacheTable::setRelCatEntry(int relId, RelCatEntry *relCatBuf) {
-
-  if(/*relId is outside the range [0, MAX_OPEN-1]*/) {
+  /* relId is outside the range [0, MAX_OPEN-1] */
+  if(relId < 0 || relId >= MAX_OPEN) {
     return E_OUTOFBOUND;
   }
 
-  if(/*entry corresponding to the relId in the Relation Cache Table is free*/) {
+  /*entry corresponding to the relId in the Relation Cache Table is free*/
+  if(relCache[relId] == nullptr) {
     return E_RELNOTOPEN;
   }
 
   // copy the relCatBuf to the corresponding Relation Catalog entry in
   // the Relation Cache Table.
+  relCache[relId]->relCatEntry = *relCatBuf;
 
   // set the dirty flag of the corresponding Relation Cache entry in
   // the Relation Cache Table.
+  relCache[relId]->dirty = true;
 
   return SUCCESS;
 }
