@@ -347,3 +347,41 @@ OpenRelTable::~OpenRelTable() {
     }
   }
 }
+
+int OpenRelTable::closeRel(int relId) {
+  // confirm that rel-id fits the following conditions
+  //     2 <=relId < MAX_OPEN
+  //     does not correspond to a free slot
+  //  (you have done this already)
+
+  /****** Releasing the Relation Cache entry of the relation ******/
+
+  if (/* RelCatEntry of the relId-th Relation Cache entry has been modified */)
+  {
+
+    /* Get the Relation Catalog entry from RelCacheTable::relCache
+    Then convert it to a record using RelCacheTable::relCatEntryToRecord(). */
+
+
+    // declaring an object of RecBuffer class to write back to the buffer
+    RecBuffer relCatBlock(recId.block);
+
+    // Write back to the buffer using relCatBlock.setRecord() with recId.slot
+  }
+
+  /****** Releasing the Attribute Cache entry of the relation ******/
+
+  // free the memory allocated in the attribute caches which was
+  // allocated in the OpenRelTable::openRel() function
+
+  // (because we are not modifying the attribute cache at this stage,
+  // write-back is not required. We will do it in subsequent
+  // stages when it becomes needed)
+
+
+  /****** Set the Open Relation Table entry of the relation as free ******/
+
+  // update `metainfo` to set `relId` as a free slot
+
+  return SUCCESS;
+}
