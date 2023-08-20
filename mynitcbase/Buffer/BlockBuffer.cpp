@@ -345,11 +345,11 @@ int BlockBuffer::getFreeBlock(int blockType){
 BlockBuffer::BlockBuffer(char blockType){
     // allocate a block on the disk and a buffer in memory to hold the new block of
     // given type using getFreeBlock function and get the return error codes if any.
-	int ret = getFreeBlock(REC);
-	if (ret != SUCCESS) {
-		return ret;
+	int ret;
+	if (blockType == 'R') {
+		ret = getFreeBlock(REC);
 	}
-
+	
     // set the blockNum field of the object to that of the allocated block
     // number if the method returned a valid block number,
     // otherwise set the error code returned as the block number.
