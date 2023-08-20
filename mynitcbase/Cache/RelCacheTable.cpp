@@ -90,3 +90,30 @@ int RelCacheTable::resetSearchIndex(int relId) {
   RecId si{-1, -1};
   return setSearchIndex(relId, &si);
 }
+
+/* Sets the Relation Catalog entry corresponding to the specified relation in the Relation Cache Table.
+   NOTE: The caller should allocate memory for the `struct RelCatEntry` before calling the function. */
+int RelCacheTable::setRelCatEntry(int relId, RelCatEntry *relCatBuf) {
+
+  if(/*relId is outside the range [0, MAX_OPEN-1]*/) {
+    return E_OUTOFBOUND;
+  }
+
+  if(/*entry corresponding to the relId in the Relation Cache Table is free*/) {
+    return E_RELNOTOPEN;
+  }
+
+  // copy the relCatBuf to the corresponding Relation Catalog entry in
+  // the Relation Cache Table.
+
+  // set the dirty flag of the corresponding Relation Cache entry in
+  // the Relation Cache Table.
+
+  return SUCCESS;
+}
+
+/* This function can be used to convert the Relation Cache entry to the corresponding record
+ that can be written back to Relation Catalog block when closing a relation in the cache memory. */
+void RelCacheTable::relCatEntryToRecord(RelCatEntry *relCatEntry, union Attribute record[RELCAT_NO_ATTRS]){
+    // left to you
+}
