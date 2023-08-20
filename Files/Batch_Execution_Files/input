@@ -1,5 +1,5 @@
-ALTER TABLE RENAME Books TO LibraryBooks;
-ALTER TABLE RENAME LibraryBooks COLUMN bookOwner TO lender;
-OPEN TABLE LibraryBooks;
-SELECT * FROM LibraryBooks INTO null WHERE price>0;
-exit
+alter table rename LibBooks to Books;
+alter table rename LibraryBooks to Students;
+alter table rename LibraryBooks to RELATIONCAT;
+open table LibraryBooks;
+alter table rename LibraryBooks to LibBooks;
