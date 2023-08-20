@@ -53,7 +53,7 @@ int Schema::renameRel(char oldRelName[ATTR_SIZE], char newRelName[ATTR_SIZE]) {
   //    (check if OpenRelTable::getRelId() returns E_RELNOTOPEN)
   //    return E_RELOPEN
   int retVal = OpenRelTable::getRelId(oldRelName);
-  if (retVal == E_RELOPEN) {
+  if (retVal != E_RELNOTOPEN) {
     return E_RELOPEN;
   }
 
