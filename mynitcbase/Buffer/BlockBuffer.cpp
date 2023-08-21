@@ -394,3 +394,11 @@ int RecBuffer::setSlotMap(unsigned char *slotMap) {
     // return SUCCESS
 	return SUCCESS;
 }
+
+/* Returns the block number of the block. Defined to 
+access the private member field `blockNum` of the class. */
+int BlockBuffer::getBlockNum(){
+
+    //return corresponding block number.
+	return this->blockNum;
+}
