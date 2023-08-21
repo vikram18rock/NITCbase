@@ -120,4 +120,12 @@ int RelCacheTable::setRelCatEntry(int relId, RelCatEntry *relCatBuf) {
  that can be written back to Relation Catalog block when closing a relation in the cache memory. */
 void RelCacheTable::relCatEntryToRecord(RelCatEntry *relCatEntry, union Attribute record[RELCAT_NO_ATTRS]){
     // left to you
+    strcpy(record[RELCAT_REL_NAME_INDEX].sVal, relCatEntry->relName);
+
+    record[RELCAT_NO_ATTRIBUTES_INDEX].nVal = (double)relCatEntry->numAttrs;
+    record[RELCAT_NO_RECORDS_INDEX].nVal = (double)relCatEntry->numRecs;
+    record[RELCAT_FIRST_BLOCK_INDEX].nVal = (double)relCatEntry->firstBlk;
+    record[RELCAT_LAST_BLOCK_INDEX].nVal = (double)relCatEntry->lastBlk;
+    record[RELCAT_NO_SLOTS_PER_BLOCK_INDEX].nVal = (double)relCatEntry->numSlotsPerBlk;
+
 }
