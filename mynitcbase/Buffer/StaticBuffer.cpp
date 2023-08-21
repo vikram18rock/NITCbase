@@ -8,7 +8,7 @@ StaticBuffer::StaticBuffer() {
 	// copy blockAllocMap blocks from disk to buffer (using readblock() of disk)
 	// blocks 0 to 3
 	for (int i = 0; i < 4; i++) {
-		Disk::readBlock(block[i], i);
+		Disk::readBlock(blocks[i], i);
 	}
 
 	for (int bufferIndex = 0; bufferIndex < BUFFER_CAPACITY; bufferIndex++) {

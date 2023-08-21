@@ -361,3 +361,36 @@ BlockBuffer::BlockBuffer(char blockType){
 
 RecBuffer::RecBuffer() : BlockBuffer('R'){}
 // call parent non-default constructor with 'R' denoting record block.
+
+/* Sets the slotmap of the block. */
+int RecBuffer::setSlotMap(unsigned char *slotMap) {
+    unsigned char *bufferPtr;
+    /* get the starting address of the buffer containing the block using
+       loadBlockAndGetBufferPtr(&bufferPtr). */
+	int ret = loadBlockAndGetBufferPtr(&bufferPtr);
+
+    // if loadBlockAndGetBufferPtr(&bufferPtr) != SUCCESS
+        // return the value returned by the call.
+	if (ret != SUCCESS) {
+		ret;
+	}
+
+    // get the header of the block using the getHeader() function
+	HeadInfo head;
+	getHeader(&head);
+
+	/* the number of slots in the block */
+    int numSlots = head.numSlots;
+
+    // the slotmap starts at bufferPtr + HEADER_SIZE. Copy the contents of the
+    // argument `slotMap` to the buffer replacing the existing slotmap.
+    // Note that size of slotmap is `numSlots`
+	memcpy(bufferPtr + HEADER_SIZE, slotMap, numSlots);
+
+    // update dirty bit using StaticBuffer::setDirtyBit
+    // if setDirtyBit failed, return the value returned by the call
+	StaticBuffer::setDirtyBit(ret);
+
+    // return SUCCESS
+	return SUCCESS;
+}
