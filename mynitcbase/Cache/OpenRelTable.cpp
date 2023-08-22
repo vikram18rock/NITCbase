@@ -341,9 +341,9 @@ int OpenRelTable::closeRel(int relId) {
 		/* Get the Relation Catalog entry from RelCacheTable::relCache
 		Then convert it to a record using RelCacheTable::relCatEntryToRecord(). */
 		Attribute record[RELCAT_NO_ATTRS];
-		RelCatEntry* relCatEntry;
-		RelCacheTable::getRelCatEntry(relId, relCatEntry);
-		RelCacheTable::relCatEntryToRecord(relCatEntry, record);
+		RelCatEntry relCatEntry;
+		RelCacheTable::getRelCatEntry(relId, &relCatEntry);
+		RelCacheTable::relCatEntryToRecord(&relCatEntry, record);
 
 		RecId recId = RelCacheTable::relCache[relId]->recId;
 		// declaring an object of RecBuffer class to write back to the buffer

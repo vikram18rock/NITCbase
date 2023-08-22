@@ -53,8 +53,9 @@ int BlockBuffer::setHeader(struct HeadInfo *head){
     //(hint: bufferHeader->numSlots = head->numSlots )
 	bufferHeader->blockType = head->blockType;
 	bufferHeader->pblock = head->pblock;
+	bufferHeader->lblock = head->lblock;
 	bufferHeader->rblock = head->rblock;
-	bufferHeader->numAttrs = head->numSlots;
+	bufferHeader->numAttrs = head->numAttrs;
 	bufferHeader->numEntries = head->numEntries;
 	bufferHeader->numSlots = head->numSlots;
 
@@ -313,7 +314,7 @@ int BlockBuffer::getFreeBlock(int blockType){
 	}
 
     // if no block is free, return E_DISKFULL.
-	if (bufferNum != -1) {
+	if (bufferNum == -1) {
 		return E_DISKFULL;
 	}
 

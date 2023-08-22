@@ -8,8 +8,8 @@ unsigned char StaticBuffer::blockAllocMap[DISK_BLOCKS];
 StaticBuffer::StaticBuffer() {
 	// copy blockAllocMap blocks from disk to buffer (using readblock() of disk)
 	// blocks 0 to 3
-	for (int i = 0; i < 4; i++) {
-		Disk::readBlock(blocks[i], i);
+	for (int i = 0; i < BLOCK_ALLOCATION_MAP_SIZE; i++) {
+		Disk::readBlock(blockAllocMap + i * BLOCK_SIZE, i);
 	}
 
 	for (int bufferIndex = 0; bufferIndex < BUFFER_CAPACITY; bufferIndex++) {
@@ -29,7 +29,7 @@ StaticBuffer::StaticBuffer() {
 StaticBuffer::~StaticBuffer() {
 	// copy blockAllocMap blocks from buffer to disk(using writeblock() of disk)
 	for (int i = 0; i < BLOCK_ALLOCATION_MAP_SIZE; i++) {
-		Disk::writeBlock(blocks[i], i);
+		Disk::writeBlock(blockAllocMap + i * BLOCK_SIZE, i);
 	}
 
 	/*iterate through all the buffer blocks,

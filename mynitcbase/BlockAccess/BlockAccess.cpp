@@ -446,6 +446,7 @@ int BlockAccess::insert(int relId, Attribute *record) {
     // create a RecBuffer object for rec_id.block
     // insert the record into rec_id'th slot using RecBuffer.setRecord())
     RecBuffer insRecBlock(rec_id.block);
+    insRecBlock.setRecord(record, rec_id.slot);
 
     /* update the slot map of the block by marking entry of the slot to
        which record was inserted as occupied) */
