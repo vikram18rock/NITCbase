@@ -271,6 +271,8 @@ int RecBuffer::setRecord(union Attribute* rec, int slotNum) {
 	return SUCCESS;
 }
 
+/* Sets the type of the block with the input block type. This method sets the
+   type in both the header of the block and also in the block allocation map. */
 int BlockBuffer::setBlockType(int blockType){
 
     unsigned char *bufferPtr;
