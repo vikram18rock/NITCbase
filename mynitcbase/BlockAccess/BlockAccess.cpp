@@ -3,6 +3,10 @@
 #include <cstring>
 #include <cstdlib>
 
+/*  This method searches the relation specified linearly to find the next record that satisfies the specified 
+    condition. The condition value is given by the argument attrVal. This function returns the recId of the next 
+    record satisfying the condition. The condition that is checked for is the following. 
+*/
 RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], union Attribute attrVal, int op) {
     // get the previous search index of the relation relId from the relation cache
     // (use RelCacheTable::getSearchIndex() function)
