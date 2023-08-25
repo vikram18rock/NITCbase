@@ -295,13 +295,12 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
 /* Closes the still open relations in the Open Relation Table at the end of the current session. */
 OpenRelTable::~OpenRelTable() {
 
-    for i from 2 to MAX_OPEN-1:
-    {
-        if ith relation is still open:
-        {
-            // close the relation using openRelTable::closeRel().
-        }
-    }
+    // close all open relations (from rel-id = 2 onwards. Why?)
+	for (int i = 2; i < MAX_OPEN; ++i) {
+		if (!tableMetaInfo[i].free) {
+			OpenRelTable::closeRel(i); // we will implement this function later
+		}
+	}
 
     /**** Closing the catalog relations in the relation cache ****/
 
@@ -337,6 +336,16 @@ OpenRelTable::~OpenRelTable() {
 
     // free the memory allocated for the attribute cache entries of the
     // relation catalog and the attribute catalog
+	for (int i = 0; i <= ATTRCAT_RELID; i++) {
+		// free attrcache
+		AttrCacheEntry* entry = AttrCacheTable::attrCache[i], * temp = nullptr;
+		while (entry) {
+			temp = entry;
+			entry = entry->next;
+			free(temp);
+		}
+	}
+	
 }
 
 int OpenRelTable::closeRel(int relId) {
