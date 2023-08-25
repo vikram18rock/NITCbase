@@ -94,7 +94,7 @@ int Schema::renameAttr(char* relName, char* oldAttrName, char* newAttrName) {
 /*  creates a new relation with the name, attribute/column list as specified in arguments.
 	Verifying the maximum number of attributes in a relation is to be checked by the caller
 	of this function (Frontend Interface) and is not handled by this function. */
-int createRel(char relName[], int nAttrs, char attrs[][ATTR_SIZE], int attrtype[]) {
+int Schema::createRel(char relName[], int nAttrs, char attrs[][ATTR_SIZE], int attrtype[]) {
 
 	// declare variable relNameAsAttribute of type Attribute
 	Attribute relNameAsAttribute;
@@ -157,6 +157,9 @@ int createRel(char relName[], int nAttrs, char attrs[][ATTR_SIZE], int attrtype[
 	// if BlockAccess::insert fails return retVal
 	// (this call could fail if there is no more space in the relation catalog)
 	int retVal = BlockAccess::insert(RELCAT_RELID, relCatRecord);
+	if (retVal == E_MAXRELATIONS) {
+		return E_MAXRELATIONS;
+	}
 
 	// iterate through 0 to numOfAttributes - 1 :
 	for (int i = 0; i < nAttrs; i++)
@@ -186,6 +189,12 @@ int createRel(char relName[], int nAttrs, char attrs[][ATTR_SIZE], int attrtype[
 		attrCatRecord[ATTRCAT_PRIMARY_FLAG_INDEX].nVal = -1;
 		attrCatRecord[ATTRCAT_ROOT_BLOCK_INDEX].nVal = -1;
 		attrCatRecord[ATTRCAT_OFFSET_INDEX].nVal = i;
+
+		retVal = BlockAccess::insert(ATTRCAT_RELID, attrCatRecord);
+		if (retVal == E_DISKFULL) {
+			deleteRel(relName);
+			return E_DISKFULL;
+		}
 	}
 
 	// return SUCCESS
