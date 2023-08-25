@@ -207,15 +207,26 @@ int Schema::deleteRel(char* relName) {
 	//     return E_NOTPERMITTED
 		// (check if the relation names are either "RELATIONCAT" and "ATTRIBUTECAT".
 		// you may use the following constants: RELCAT_NAME and ATTRCAT_NAME)
+	if (
+		strcmp(RELCAT_RELNAME, relName) == 0 ||
+		strcmp(ATTRCAT_RELNAME, relName) == 0
+	) {
+		return E_NOTPERMITTED;
+	}
 
 	// get the rel-id using appropriate method of OpenRelTable class by
 	// passing relation name as argument
+	int relId = OpenRelTable::getRelId(relName);
 
 	// if relation is opened in open relation table, return E_RELOPEN
+	if (relId != E_RELNOTOPEN) {
+		return E_RELOPEN;
+	}
 
 	// Call BlockAccess::deleteRelation() with appropriate argument.
 
 	// return the value returned by the above deleteRelation() call
+	return BlockAccess::deleteRelation(relName);
 
 	/* the only that should be returned from deleteRelation() is E_RELNOTEXIST.
 	   The deleteRelation call may return E_OUTOFBOUND from the call to
