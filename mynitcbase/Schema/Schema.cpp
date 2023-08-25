@@ -91,10 +91,9 @@ int Schema::renameAttr(char* relName, char* oldAttrName, char* newAttrName) {
 	return BlockAccess::renameAttribute(relName, oldAttrName, newAttrName);
 }
 
-/* This method creates a new relation with the name, attribute/column list as specified in arguments.
-   Verifying the maximum number of attributes in a relation is to be checked by the caller of this
-   function (Frontend Interface) and is not handled by this function. */
-
+/*  creates a new relation with the name, attribute/column list as specified in arguments.
+	Verifying the maximum number of attributes in a relation is to be checked by the caller
+	of this function (Frontend Interface) and is not handled by this function. */
 int createRel(char relName[], int nAttrs, char attrs[][ATTR_SIZE], int attrtype[]) {
 
 	// declare variable relNameAsAttribute of type Attribute
