@@ -97,22 +97,42 @@ int Schema::renameAttr(char* relName, char* oldAttrName, char* newAttrName) {
 int createRel(char relName[], int nAttrs, char attrs[][ATTR_SIZE], int attrtype[]) {
 
 	// declare variable relNameAsAttribute of type Attribute
+	Attribute relNameAsAttribute;
 	// copy the relName into relNameAsAttribute.sVal
+	strcpy(relNameAsAttribute.sVal, relName);
 
 	// declare a variable targetRelId of type RecId
+	RecId targetRelId;
 
 	// Reset the searchIndex using RelCacheTable::resetSearhIndex()
 	// Search the relation catalog (relId given by the constant RELCAT_RELID)
 	// for attribute value attribute "RelName" = relNameAsAttribute using
 	// BlockAccess::linearSearch() with OP = EQ
+	RelCacheTable::resetSearchIndex(RELCAT_RELID);
+
+	// the attribute in which we need to search attrVal (i.e "RelName" = relNameAsAttribute)
+	char searchInAttr[ATTR_SIZE];
+	strcpy(searchInAttr, RELCAT_ATTR_RELNAME);
+
+	targetRelId = BlockAccess::linearSearch(RELCAT_RELID, searchInAttr, relNameAsAttribute, EQ);
 
 	// if a relation with name `relName` already exists  ( linearSearch() does
 	//                                                     not return {-1,-1} )
 	//     return E_RELEXIST;
+	if (targetRelId.block != -1 && targetRelId.slot != -1) {
+		return E_RELEXIST;
+	}
 
 	// compare every pair of attributes of attrNames[] array
 	// if any attribute names have same string value,
 	//     return E_DUPLICATEATTR (i.e 2 attributes have same value)
+	for (int i = 0; i < nAttrs; i++) {
+		for (int j = i + 1; j < nAttrs; j++) {
+			if (strcmp(attrs[i], attrs[j]) == 0) {
+				return E_DUPLICATEATTR;
+			}
+		}
+	}
 
 	/* declare relCatRecord of type Attribute which will be used to store the
 	   record corresponding to the new relation which will be inserted
@@ -126,12 +146,20 @@ int createRel(char relName[], int nAttrs, char attrs[][ATTR_SIZE], int attrtype[
 	// offset RELCAT_LAST_BLOCK_INDEX: -1
 	// offset RELCAT_NO_SLOTS_PER_BLOCK_INDEX: floor((2016 / (16 * nAttrs + 1)))
 	// (number of slots is calculated as specified in the physical layer docs)
+	strcpy(relCatRecord[RELCAT_REL_NAME_INDEX].sVal, relName);
+	relCatRecord[RELCAT_NO_ATTRIBUTES_INDEX].nVal = nAttrs;
+	relCatRecord[RELCAT_NO_RECORDS_INDEX].nVal = 0;
+	relCatRecord[RELCAT_FIRST_BLOCK_INDEX].nVal = -1;
+	relCatRecord[RELCAT_LAST_BLOCK_INDEX].nVal = -1;
+	relCatRecord[RELCAT_NO_SLOTS_PER_BLOCK_INDEX].nVal = (BLOCK_SIZE - HEADER_SIZE) / (ATTR_SIZE * nAttrs + 1) ;
 
 	// retVal = BlockAccess::insert(RELCAT_RELID(=0), relCatRecord);
 	// if BlockAccess::insert fails return retVal
 	// (this call could fail if there is no more space in the relation catalog)
+	int retVal = BlockAccess::insert(RELCAT_RELID, relCatRecord);
 
 	// iterate through 0 to numOfAttributes - 1 :
+	for (int i = 0; i < nAttrs; i++)
 	{
 		/* declare Attribute attrCatRecord[6] to store the attribute catalog
 		   record corresponding to i'th attribute of the argument passed*/
@@ -151,9 +179,17 @@ int createRel(char relName[], int nAttrs, char attrs[][ATTR_SIZE], int attrtype[
 				// (this is necessary because we had already created the
 				//  relation catalog entry which needs to be removed)
 		   */
+		Attribute attrCatRecord[ATTRCAT_NO_ATTRS];
+		strcpy(attrCatRecord[ATTRCAT_REL_NAME_INDEX].sVal, relName);
+		strcpy(attrCatRecord[ATTRCAT_ATTR_NAME_INDEX].sVal, attrs[i]);
+		attrCatRecord[ATTRCAT_ATTR_TYPE_INDEX].nVal = attrtype[i];
+		attrCatRecord[ATTRCAT_PRIMARY_FLAG_INDEX].nVal = -1;
+		attrCatRecord[ATTRCAT_ROOT_BLOCK_INDEX].nVal = -1;
+		attrCatRecord[ATTRCAT_OFFSET_INDEX].nVal = i;
 	}
 
 	// return SUCCESS
+	return SUCCESS;
 }
 
 /* This method deletes the relation with name as specified in arguments. */
