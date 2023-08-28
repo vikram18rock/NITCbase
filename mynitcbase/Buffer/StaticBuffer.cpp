@@ -134,7 +134,7 @@ int StaticBuffer::setDirtyBit(int blockNum) {
     return E_OUTOFBOUND;
   }
   else {
-    metainfo[bufferNum].dirty = 1;
+    metainfo[bufferNum].dirty = true;
   }
 
   // return SUCCESS
