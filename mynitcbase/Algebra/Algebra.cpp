@@ -97,6 +97,7 @@ int Algebra::select(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], char attr
 			recblock.getRecord(record, searchRes.slot);
 
 			// print the attribute values in the same format as above
+			printf("|");
 			for (int i = 0; i < relCatEntry.numAttrs; i++) {
 				// get the attrCatEntry for the srcRelId with corresponding offsets
 				AttrCatEntry attrCatEntry;
