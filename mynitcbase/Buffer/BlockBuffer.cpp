@@ -305,24 +305,24 @@ int BlockBuffer::getFreeBlock(int blockType){
 
     // iterate through the StaticBuffer::blockAllocMap and find the block number
     // of a free block in the disk.
-	int bufferNum = -1;
+	int blockNum = -1;
 	for (int i = 0; i < DISK_BLOCKS; i++) {
 		if (StaticBuffer::blockAllocMap[i] == UNUSED_BLK) {
-			bufferNum = i;
+			blockNum = i;
 			break;
 		}
 	}
 
     // if no block is free, return E_DISKFULL.
-	if (bufferNum == -1) {
+	if (blockNum == -1) {
 		return E_DISKFULL;
 	}
 
     // set the object's blockNum to the block number of the free block.
-	this->blockNum = bufferNum;
+	this->blockNum = blockNum;
 
     // find a free buffer using StaticBuffer::getFreeBuffer() .
-	bufferNum = StaticBuffer::getFreeBuffer(this->blockNum);
+	int bufferNum = StaticBuffer::getFreeBuffer(this->blockNum);
 
     // initialize the header of the block passing a struct HeadInfo with values
     // pblock: -1, lblock: -1, rblock: -1, numEntries: 0, numAttrs: 0, numSlots: 0
@@ -390,10 +390,9 @@ int RecBuffer::setSlotMap(unsigned char *slotMap) {
 
     // update dirty bit using StaticBuffer::setDirtyBit
     // if setDirtyBit failed, return the value returned by the call
-	StaticBuffer::setDirtyBit(ret);
 
     // return SUCCESS
-	return SUCCESS;
+	return StaticBuffer::setDirtyBit(this->blockNum);
 }
 
 /* Returns the block number of the block. Defined to 
