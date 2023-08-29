@@ -458,7 +458,7 @@ int BlockAccess::insert(int relId, Attribute *record) {
     // (use RecBuffer::getSlotMap() and RecBuffer::setSlotMap() functions)
     unsigned char slotMap[numOfSlots];
     insRecBlock.getSlotMap(slotMap);
-    slotMap[rec_id.slot] = OCCUPIED;
+    slotMap[rec_id.slot] = SLOT_OCCUPIED;
     insRecBlock.setSlotMap(slotMap);
 
     // increment the numEntries field in the header of the block to
