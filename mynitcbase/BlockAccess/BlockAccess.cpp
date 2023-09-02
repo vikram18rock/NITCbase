@@ -756,7 +756,7 @@ int BlockAccess::project(int relId, Attribute *record) {
         // block = previous search index's block
         // slot = previous search index's slot + 1
         block = prevRecId.block;
-        slot = prevRecId.slot;
+        slot = prevRecId.slot + 1;
     }
 
 

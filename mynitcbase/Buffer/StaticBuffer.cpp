@@ -93,6 +93,7 @@ int StaticBuffer::getFreeBuffer(int blockNum) {
 
 	// update the metaInfo entry corresponding to bufferNum with
 	// free:false, dirty:false, blockNum:the input block number, timeStamp:0.
+	metainfo[bufferNum].dirty = false;
 	metainfo[bufferNum].free = false;
 	metainfo[bufferNum].timeStamp = 0;
 	metainfo[bufferNum].blockNum = blockNum;

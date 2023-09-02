@@ -307,7 +307,7 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE]) {
     RelCacheTable::resetSearchIndex(srcRelId);
     
     /* while BlockAccess::project(srcRelId, record) returns SUCCESS */
-    while (BlockAccess::project(srcRelId, record) != SUCCESS)
+    while (BlockAccess::project(srcRelId, record) == SUCCESS)
     {
         // record will contain the next record
 
@@ -409,11 +409,12 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], int tar_
 
     // Take care to reset the searchIndex before calling the project function
     // using RelCacheTable::resetSearchIndex()
+    RelCacheTable::resetSearchIndex(srcRelId);
 
     Attribute record[src_nAttrs];
 
     /* while BlockAccess::project(srcRelId, record) returns SUCCESS */
-    while (BlockAccess::project(srcRelId, record)) {
+    while (BlockAccess::project(srcRelId, record) == SUCCESS) {
         // the variable `record` will contain the next record
 
         Attribute proj_record[tar_nAttrs];
@@ -425,7 +426,7 @@ int Algebra::project(char srcRel[ATTR_SIZE], char targetRel[ATTR_SIZE], int tar_
         }
 
         // ret = BlockAccess::insert(targetRelId, proj_record);
-        ret = BlockAccess::insert(targetRelId, record);
+        ret = BlockAccess::insert(targetRelId, proj_record);
 
         /*if insert fails */
         if (ret != SUCCESS) {
