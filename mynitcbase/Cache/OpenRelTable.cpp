@@ -225,6 +225,7 @@ int OpenRelTable::openRel(char relName[ATTR_SIZE]) {
 	struct RelCacheEntry relCacheEntry;
 	RelCacheTable::recordToRelCatEntry(record, &relCacheEntry.relCatEntry);
 	relCacheEntry.recId = relcatRecId;
+	relCacheEntry.dirty = false;
 
 	RelCacheTable::relCache[relId] = (struct RelCacheEntry*)malloc(sizeof(RelCacheEntry));
 	*(RelCacheTable::relCache[relId]) = relCacheEntry;

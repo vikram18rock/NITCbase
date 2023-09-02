@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <stdio.h>
 
 /*  This method searches the relation specified linearly to find the next record that satisfies the specified 
     condition. The condition value is given by the argument attrVal. This function returns the recId of the next 
@@ -73,6 +74,11 @@ RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], union Attri
             // update slot = 0
             block = head.rblock;
             slot = 0;
+
+            // THIS CODE SHOULD BE REMOVED AFTER DEBUGGING
+            if (block == 18) 
+                int temp = 0;
+
             continue;  // continue to the beginning of this while loop
         }
 
@@ -665,6 +671,9 @@ int BlockAccess::deleteRelation(char relName[ATTR_SIZE]) {
 
             // call releaseBlock()
             attrCatBlock.releaseBlock();
+
+            RecId nextRecId = {head.rblock, 0};
+            RelCacheTable::setSearchIndex(ATTRCAT_RELID, &nextRecId);
         }
 
         // (the following part is only relevant once indexing has been implemented)
@@ -672,6 +681,8 @@ int BlockAccess::deleteRelation(char relName[ATTR_SIZE]) {
         if (rootBlock != -1) {
             // delete the bplus tree rooted at rootBlock using BPlusTree::bPlusDestroy()
         }
+
+        if (numberOfAttributesDeleted == numAttrs) break;
     }
 
     /*** Delete the entry corresponding to the relation from relation catalog ***/
@@ -756,7 +767,7 @@ int BlockAccess::project(int relId, Attribute *record) {
         // block = previous search index's block
         // slot = previous search index's slot + 1
         block = prevRecId.block;
-        slot = prevRecId.slot;
+        slot = prevRecId.slot + 1;
     }
 
 

@@ -1,9 +1,24 @@
 #include "StaticBuffer.h"
+#include <stdio.h>
 // the declarations for this class can be found at "StaticBuffer.h"
 
 unsigned char StaticBuffer::blocks[BUFFER_CAPACITY][BLOCK_SIZE];
 struct BufferMetaInfo StaticBuffer::metainfo[BUFFER_CAPACITY];
 unsigned char StaticBuffer::blockAllocMap[DISK_BLOCKS];
+
+void printBuffer (int bufferIndex, unsigned char buffer[]) {
+	for (int i = 0; i < BLOCK_SIZE; i++) {
+		if (i % 32 == 0) printf ("\n");
+		printf ("%u ", buffer[i]);
+	}
+	printf ("\n");
+	printf ("\n");
+	for (int i = 0; i < BLOCK_SIZE; i++) {
+		if (i % 32 == 0) printf ("\n");
+		printf ("%c ", buffer[i]);
+	}
+	printf ("\n");
+}
 
 StaticBuffer::StaticBuffer() {
 	// copy blockAllocMap blocks from disk to buffer (using readblock() of disk)
@@ -93,6 +108,7 @@ int StaticBuffer::getFreeBuffer(int blockNum) {
 
 	// update the metaInfo entry corresponding to bufferNum with
 	// free:false, dirty:false, blockNum:the input block number, timeStamp:0.
+	metainfo[bufferNum].dirty = false;
 	metainfo[bufferNum].free = false;
 	metainfo[bufferNum].timeStamp = 0;
 	metainfo[bufferNum].blockNum = blockNum;
@@ -145,7 +161,7 @@ int StaticBuffer::setDirtyBit(int blockNum) {
 		return E_OUTOFBOUND;
 	}
 	else {
-		metainfo[bufferNum].dirty = 1;
+		metainfo[bufferNum].dirty = true;
 	}
 
 	// return SUCCESS
