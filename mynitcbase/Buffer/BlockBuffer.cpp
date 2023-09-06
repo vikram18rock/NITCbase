@@ -24,10 +24,12 @@ int BlockBuffer::getHeader(struct HeadInfo* head) {
 
 	// populate the numEntries, numAttrs and numSlots fields in *head
 	memcpy(&head->numSlots, bufferPtr + 24, 4);
-	memcpy(&head->numEntries, bufferPtr + 16, 4);
 	memcpy(&head->numAttrs, bufferPtr + 20, 4);
+	memcpy(&head->numEntries, bufferPtr + 16, 4);
 	memcpy(&head->rblock, bufferPtr + 12, 4);
 	memcpy(&head->lblock, bufferPtr + 8, 4);
+	memcpy(&head->pblock, bufferPtr + 4, 4);
+	memcpy(&head->blockType, bufferPtr, 4);
 
 	return SUCCESS;
 }
@@ -431,14 +433,14 @@ void BlockBuffer::releaseBlock() {
 		// to true.
 		if (bufferNum != E_BLOCKNOTINBUFFER) {
 			StaticBuffer::metainfo[bufferNum].free = true;
-
-			// free the block in disk by setting the data type of the entry
-			// corresponding to the block number in StaticBuffer::blockAllocMap
-			// to UNUSED_BLK.
-			StaticBuffer::blockAllocMap[bufferNum] = UNUSED_BLK;
-
-			// set the object's blockNum to INVALID_BLOCK (-1)
-			this->blockNum = INVALID_BLOCKNUM;
 		}
+
+		// free the block in disk by setting the data type of the entry
+		// corresponding to the block number in StaticBuffer::blockAllocMap
+		// to UNUSED_BLK.
+		StaticBuffer::blockAllocMap[this->blockNum] = UNUSED_BLK;
+
+		// set the object's blockNum to INVALID_BLOCK (-1)
+		this->blockNum = INVALID_BLOCKNUM;
 	}
 }
