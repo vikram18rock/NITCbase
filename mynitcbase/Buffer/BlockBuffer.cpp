@@ -431,14 +431,14 @@ void BlockBuffer::releaseBlock() {
 		// to true.
 		if (bufferNum != E_BLOCKNOTINBUFFER) {
 			StaticBuffer::metainfo[bufferNum].free = true;
-
-			// free the block in disk by setting the data type of the entry
-			// corresponding to the block number in StaticBuffer::blockAllocMap
-			// to UNUSED_BLK.
-			StaticBuffer::blockAllocMap[bufferNum] = UNUSED_BLK;
-
-			// set the object's blockNum to INVALID_BLOCK (-1)
-			this->blockNum = INVALID_BLOCKNUM;
 		}
+
+		// free the block in disk by setting the data type of the entry
+		// corresponding to the block number in StaticBuffer::blockAllocMap
+		// to UNUSED_BLK.
+		StaticBuffer::blockAllocMap[this->blockNum] = UNUSED_BLK;
+
+		// set the object's blockNum to INVALID_BLOCK (-1)
+		this->blockNum = INVALID_BLOCKNUM;
 	}
 }
