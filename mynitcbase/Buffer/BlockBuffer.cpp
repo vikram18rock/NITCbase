@@ -442,3 +442,31 @@ void BlockBuffer::releaseBlock() {
 		this->blockNum = INVALID_BLOCKNUM;
 	}
 }
+
+// call the corresponding parent constructor
+IndBuffer::IndBuffer(char blockType) : BlockBuffer(blockType){}
+
+// call the corresponding parent constructor
+IndBuffer::IndBuffer(int blockNum) : BlockBuffer(blockNum){}
+
+IndInternal::IndInternal() : IndBuffer('I'){}
+// call the corresponding parent constructor
+// 'I' used to denote IndInternal.
+
+IndInternal::IndInternal(int blockNum) : IndBuffer(blockNum){}
+// call the corresponding parent constructor
+
+IndLeaf::IndLeaf() : IndBuffer('L'){} // this is the way to call parent non-default constructor.
+                      // 'L' used to denote IndLeaf.
+
+//this is the way to call parent non-default constructor.
+IndLeaf::IndLeaf(int blockNum) : IndBuffer(blockNum){}
+
+// for avoiding compile error
+int IndInternal::setEntry(void *ptr, int indexNum) {
+  return 0;
+}
+
+int IndLeaf::setEntry(void *ptr, int indexNum) {
+  return 0;
+}
