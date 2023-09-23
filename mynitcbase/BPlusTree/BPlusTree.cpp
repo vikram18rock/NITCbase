@@ -54,6 +54,7 @@ RecId BPlusTree::bPlusSearch(int relId, char attrName[ATTR_SIZE], Attribute attr
 
             // update block to rblock of current block and index to 0.
             block = leafHead.rblock;
+            index = 0;
 
             if (block == -1) {
                 // (end of linked list reached - the search is done.)

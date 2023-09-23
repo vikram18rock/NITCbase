@@ -156,7 +156,7 @@ int StaticBuffer::setDirtyBit(int blockNum) {
 int StaticBuffer::getStaticBlockType(int blockNum){
     // Check if blockNum is valid (non zero and less than number of disk blocks)
     // and return E_OUTOFBOUND if not valid.
-	if (blockNum >= DISK_BLOCKS || blockNum > 0) {
+	if (blockNum >= DISK_BLOCKS || blockNum < 0) {
 		return E_OUTOFBOUND;
 	}
 

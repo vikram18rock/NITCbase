@@ -25,6 +25,7 @@ int BlockBuffer::getHeader(struct HeadInfo* head) {
 	// populate the numEntries, numAttrs and numSlots fields in *head
 	memcpy(&head->numSlots, bufferPtr + 24, 4);
 	memcpy(&head->numEntries, bufferPtr + 16, 4);
+	memcpy(&head->pblock, bufferPtr + 4, 4);
 	memcpy(&head->numAttrs, bufferPtr + 20, 4);
 	memcpy(&head->rblock, bufferPtr + 12, 4);
 	memcpy(&head->lblock, bufferPtr + 8, 4);
@@ -51,7 +52,7 @@ int BlockBuffer::setHeader(struct HeadInfo* head) {
 	// copy the fields of the HeadInfo pointed to by head (except reserved) to
 	// the header of the block (pointed to by bufferHeader)
 	//(hint: bufferHeader->numSlots = head->numSlots )
-	bufferHeader->blockType = head->blockType;
+	// bufferHeader->blockType = head->blockType;
 	bufferHeader->pblock = head->pblock;
 	bufferHeader->lblock = head->lblock;
 	bufferHeader->rblock = head->rblock;

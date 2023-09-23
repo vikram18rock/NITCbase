@@ -1,3 +1,4 @@
 create table Numbers(key NUM);
 open table Numbers;
 insert into Numbers values from s10nums.csv;
+SELECT * FROM Numbers INTO BigNumbers WHERE key > 165000;
