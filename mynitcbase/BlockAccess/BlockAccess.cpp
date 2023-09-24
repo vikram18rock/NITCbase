@@ -579,6 +579,7 @@ int BlockAccess::deleteRelation(char relName[ATTR_SIZE]) {
     ***/
 
     // reset the searchIndex of the attribute catalog
+    RelCacheTable::resetSearchIndex(ATTRCAT_RELID);
 
     int numberOfAttributesDeleted = 0;
 
