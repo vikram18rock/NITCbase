@@ -445,6 +445,7 @@ int BlockAccess::insert(int relId, Attribute *record) {
         // update last block field in the relation catalog entry to the
         // new block (using RelCacheTable::setRelCatEntry() function)
         relCatEntry.lastBlk = rec_id.block;
+        RelCacheTable::setRelCatEntry(relId, &relCatEntry);
     }
 
     // create a RecBuffer object for rec_id.block
@@ -650,6 +651,7 @@ int BlockAccess::deleteRelation(char relName[ATTR_SIZE]) {
                 HeadInfo rightHead;
                 rightBlock.getHeader(&rightHead);
                 rightHead.lblock = head.lblock;
+                rightBlock.setHeader(&rightHead);
 
             } else {
                 // (the block being released is the "Last Block" of the relation.)

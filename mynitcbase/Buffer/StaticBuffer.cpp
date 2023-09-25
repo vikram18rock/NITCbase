@@ -78,7 +78,7 @@ int StaticBuffer::getFreeBuffer(int blockNum) {
 	//     find the buffer with the largest timestamp
 	//     IF IT IS DIRTY, write back to the disk using Disk::writeBlock()
 	//     set bufferNum = index of this buffer
-	if (isFree) {
+	if (!isFree) {
 		for (int i = 0; i < BUFFER_CAPACITY; i++) {
 			if (metainfo[i].timeStamp > metainfo[bufferNum].timeStamp) {
 				bufferNum = i;
