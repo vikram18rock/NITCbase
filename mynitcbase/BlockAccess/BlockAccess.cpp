@@ -63,7 +63,7 @@ RecId BlockAccess::linearSearch(int relId, char attrName[ATTR_SIZE], union Attri
         Attribute record[head.numAttrs];
         recBlock.getRecord(record, slot);
 
-        unsigned char* slotmap = (unsigned char*)malloc(sizeof(unsigned char) * head.numSlots);
+        unsigned char slotmap[head.numSlots];
         recBlock.getSlotMap(slotmap);
 
         // If slot >= the number of slots per block(i.e. no more slots in this block)
@@ -332,7 +332,7 @@ int BlockAccess::insert(int relId, Attribute *record) {
         relBlock.getHeader(&head);
 
         // get slot map of block(blockNum) using RecBuffer::getSlotMap() function
-        unsigned char * slotMap = (unsigned char*)malloc(sizeof(unsigned char) * head.numSlots);
+        unsigned char slotMap[head.numSlots];
         relBlock.getSlotMap(slotMap);
 
         // search for free slot in the block 'blockNum' and store it's rec-id in rec_id
