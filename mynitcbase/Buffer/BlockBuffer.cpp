@@ -393,10 +393,9 @@ int RecBuffer::setSlotMap(unsigned char* slotMap) {
 
 	// update dirty bit using StaticBuffer::setDirtyBit
 	// if setDirtyBit failed, return the value returned by the call
-	StaticBuffer::setDirtyBit(ret);
 
 	// return SUCCESS
-	return SUCCESS;
+	return StaticBuffer::setDirtyBit(ret);
 }
 
 /* Returns the block number of the block. Defined to
