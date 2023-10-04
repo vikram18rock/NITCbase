@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
   OpenRelTable cache;
 
   
-  for (int i = 0; i <= ATTRCAT_RELID; i++) {
+  for (int i = 0; i <= ATTRCAT_RELID + 1; i++) {
 
       // get the relation catalog entry using RelCacheTable::getRelCatEntry()
       RelCatEntry rel;
