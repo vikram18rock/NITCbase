@@ -1,3 +1,13 @@
+/**
+ * @file Schema.cpp
+ * @brief Implementation of Schema class methods for managing relations and attributes.
+ * 
+ * This file contains the implementation of the Schema class methods for opening, closing, renaming, and creating relations and attributes.
+ * The Schema class is responsible for managing the OpenRelTable, RelCacheTable, and BlockAccess classes to perform these operations.
+ * 
+ * @author [Insert Your Name]
+ * @date [Insert Date]
+ */
 #include "Schema.h"
 
 #include <cmath>
@@ -234,4 +244,81 @@ int Schema::deleteRel(char* relName) {
 	   correct, it should not reach that point. That error could only occur
 	   if the BlockBuffer was initialized with an invalid block number.
 	*/
+}
+
+/* This method creates a bplus indexing on an attribute attrName in a relation relName as specified in arguments. */
+int Schema::createIndex(char relName[ATTR_SIZE],char attrName[ATTR_SIZE]){
+    // if the relName is either Relation Catalog or Attribute Catalog,
+        // return E_NOTPERMITTED
+        // (check if the relation names are either "RELATIONCAT" and "ATTRIBUTECAT".
+        // you may use the following constants: RELCAT_NAME and ATTRCAT_NAME)
+	if (
+		strcmp(relName, RELCAT_RELNAME) == 0 ||
+		strcmp(relName, ATTRCAT_RELNAME) == 0
+	) {
+		return E_NOTPERMITTED;
+	}
+
+    // get the relation's rel-id using OpenRelTable::getRelId() method
+	int relId = OpenRelTable::getRelId(relName);
+
+    // if relation is not open in open relation table, return E_RELNOTOPEN
+    // (check if the value returned from getRelId function call = E_RELNOTOPEN)
+	if (relId == E_RELNOTOPEN) {
+		return E_RELNOTOPEN;
+	}
+
+    // create a bplus tree using BPlusTree::bPlusCreate() and return the value
+    return BPlusTree::bPlusCreate(relId, attrName);
+}
+
+/* This method drops the bplus indexing on an attribute attrName in a relation relName as specified in arguments. */
+int Schema::dropIndex(char *relName, char *attrName) {
+    // if the relName is either Relation Catalog or Attribute Catalog,
+        // return E_NOTPERMITTED
+        // (check if the relation names are either "RELATIONCAT" and "ATTRIBUTECAT".
+        // you may use the following constants: RELCAT_NAME and ATTRCAT_NAME)
+	if (
+		strcmp(relName, RELCAT_RELNAME) == 0 ||
+		strcmp(relName, ATTRCAT_RELNAME) == 0
+	) {
+		return E_NOTPERMITTED;
+	}
+
+    // get the relation's rel-id using OpenRelTable::getRelId() method
+	int relId = OpenRelTable::getRelId(relName);
+
+    // if relation is not open in open relation table, return E_RELNOTOPEN
+    // (check if the value returned from getRelId function call = E_RELNOTOPEN)
+	if (relId == E_RELNOTOPEN) {
+		return E_RELNOTOPEN;
+	}
+
+    // get the attribute catalog entry corresponding to the attribute
+    // using AttrCacheTable::getAttrCatEntry()
+	AttrCatEntry attrCatEntry;
+	int retVal = AttrCacheTable::getAttrCatEntry(relId, attrName, &attrCatEntry);
+
+    // if getAttrCatEntry() fails, return E_ATTRNOTEXIST
+	if (retVal == E_ATTRNOTEXIST) {
+		return E_ATTRNOTEXIST;
+	}
+
+	/* get the root block from attrcat entry */
+    int rootBlock = attrCatEntry.rootBlock;
+
+	/* if attribute does not have an index (rootBlock = -1) */
+    if (rootBlock == -1) {
+        return E_NOINDEX;
+    }
+
+    // destroy the bplus tree rooted at rootBlock using BPlusTree::bPlusDestroy()
+    BPlusTree::bPlusDestroy(rootBlock);
+
+    // set rootBlock = -1 in the attribute cache entry of the attribute using
+    // AttrCacheTable::setAttrCatEntry()
+	attrCatEntry.rootBlock = -1;
+	AttrCacheTable::setAttrCatEntry(relId, attrName, &attrCatEntry);
+
+    return SUCCESS;
 }

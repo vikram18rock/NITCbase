@@ -218,3 +218,81 @@ int AttrCacheTable::resetSearchIndex(int relId, int attrOffset) {
 	IndexId resetIndex = {-1, -1};
 	return setSearchIndex(relId, attrOffset, &resetIndex);
 }
+
+// Sets the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.
+int AttrCacheTable::setAttrCatEntry(int relId, char attrName[ATTR_SIZE], AttrCatEntry* attrCatBuf) {
+
+	/*relId is outside the range [0, MAX_OPEN-1]*/
+	if (relId < 0 || relId >= MAX_OPEN) {
+		return E_OUTOFBOUND;
+	}
+
+	/*entry corresponding to the relId in the Attribute Cache Table is free*/
+	if (attrCache[relId] == nullptr) {
+		return E_RELNOTOPEN;
+	}
+
+	/* each attribute corresponding to relation with relId */
+	for (AttrCacheEntry* entry = attrCache[relId]; entry != nullptr; entry = entry->next) {
+		/* the attrName field of the AttrCatEntry
+		   is equal to the input attrName */
+		if (strcmp(entry->attrCatEntry.attrName, attrName) == 0) {
+			// copy the attrCatBuf to the corresponding Attribute Catalog entry in
+			// the Attribute Cache Table.
+			entry->attrCatEntry = *attrCatBuf;
+
+			// set the dirty flag of the corresponding Attribute Cache entry in the
+			// Attribute Cache Table.
+			entry->dirty = true;
+
+			return SUCCESS;
+		}
+	}
+
+	return E_ATTRNOTEXIST;
+}
+
+// Sets the Attribute Catalog entry corresponding to the given attribute of the specified relation in the Attribute Cache Table.
+int AttrCacheTable::setAttrCatEntry(int relId, int attrOffset, AttrCatEntry* attrCatBuf) {
+
+	/*relId is outside the range [0, MAX_OPEN-1]*/
+	if (relId < 0 || relId >= MAX_OPEN) {
+		return E_OUTOFBOUND;
+	}
+
+	/*entry corresponding to the relId in the Attribute Cache Table is free*/
+	if (attrCache[relId] == nullptr) {
+		return E_RELNOTOPEN;
+	}
+
+	/* each attribute corresponding to relation with relId */
+	for (AttrCacheEntry* entry = attrCache[relId]; entry != nullptr; entry = entry->next) {
+		/* the offset field of the AttrCatEntry
+		   is equal to the input attroffset */
+		if (entry->attrCatEntry.offset == attrOffset) {
+			// copy the attrCatBuf to the corresponding Attribute Catalog entry in
+			// the Attribute Cache Table.
+			entry->attrCatEntry = *attrCatBuf;
+
+			// set the dirty flag of the corresponding Attribute Cache entry in the
+			// Attribute Cache Table.
+			entry->dirty = true;
+
+			return SUCCESS;
+		}
+	}
+
+	return E_ATTRNOTEXIST;
+}
+
+/* A function that converts AttrCatEntry structure to a record, implemented as an array of union Attribute. */
+void AttrCacheTable::attrCatEntryToRecord(AttrCatEntry* attrCatEntry, union Attribute record[ATTRCAT_NO_ATTRS]) {
+	// left to you
+	strcpy(record[RELCAT_REL_NAME_INDEX].sVal, attrCatEntry->relName);
+	strcpy(record[RELCAT_NO_ATTRIBUTES_INDEX].sVal, attrCatEntry->attrName);
+
+	record[RELCAT_NO_RECORDS_INDEX].nVal = (double)attrCatEntry->attrType;
+	record[RELCAT_FIRST_BLOCK_INDEX].nVal = (double)attrCatEntry->primaryFlag;
+	record[RELCAT_LAST_BLOCK_INDEX].nVal = (double)attrCatEntry->rootBlock;
+	record[RELCAT_NO_SLOTS_PER_BLOCK_INDEX].nVal = (double)attrCatEntry->offset;
+}
