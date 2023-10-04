@@ -5,6 +5,7 @@
 
 #include <cstring>
 #include <iostream>
+using namespace std;
 
 int main(int argc, char *argv[]) {
   Disk disk_run;

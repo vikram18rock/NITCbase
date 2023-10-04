@@ -89,7 +89,6 @@ OpenRelTable::OpenRelTable() {
   curr->recId.slot = RELCAT_NO_ATTRS - 1;
   curr->recId.block = ATTRCAT_BLOCK;
   i++;
-
   // set the next field in the last entry to nullptr
 
   AttrCacheTable::attrCache[RELCAT_RELID] = head;
