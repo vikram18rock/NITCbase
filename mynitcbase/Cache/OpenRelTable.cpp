@@ -99,7 +99,6 @@ OpenRelTable::OpenRelTable() {
   curr->next = nullptr;
   curr->recId.slot = i;
   curr->recId.block = ATTRCAT_BLOCK;
-  i++;
 
   // set the value at AttrCacheTable::attrCache[ATTRCAT_RELID]
   AttrCacheTable::attrCache[ATTRCAT_RELID] = head;
