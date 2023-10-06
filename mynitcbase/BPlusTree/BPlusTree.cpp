@@ -686,7 +686,9 @@ int BPlusTree::insertIntoInternal(int relId, char attrName[ATTR_SIZE], int intBl
     int i, retVal;
     for (i = 0; i < blockHeader.numEntries; i++) {
         intBlk.getEntry(&internalEntries[i], i);
-
+    }
+    
+    for (i = 0; i < blockHeader.numEntries; i++) {
         retVal = compareAttrs(internalEntries[i].attrVal, intEntry.attrVal, attrCatEntry.attrType);
         if (retVal > 0) {
             // shift all entries from i to numEntries-1 to the right by one position
@@ -696,16 +698,21 @@ int BPlusTree::insertIntoInternal(int relId, char attrName[ATTR_SIZE], int intBl
 
             // insert intEntry at index i
             internalEntries[i] = intEntry;
-
-            // updating lChild of the entry immediately following the newly added entry
-            internalEntries[i + 1].lChild = intEntry.rChild;
-
             break;
         }
     }
     if (i == blockHeader.numEntries) {
         // insert intEntry at index i
         internalEntries[i] = intEntry;
+    }
+
+    // updating lChild of the entry immediately following the newly added entry
+    if (i < blockHeader.numEntries) {
+        internalEntries[i + 1].lChild = intEntry.rChild;
+    }
+    // updating rChild of the entry immediately preceding the newly added entry
+    if (i > 0) {
+        internalEntries[i - 1].rChild = intEntry.lChild;
     }
 
     if (blockHeader.numEntries != MAX_KEYS_INTERNAL) {
