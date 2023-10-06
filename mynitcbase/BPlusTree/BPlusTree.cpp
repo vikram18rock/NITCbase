@@ -235,7 +235,7 @@ int BPlusTree::bPlusCreate(int relId, char attrName[ATTR_SIZE]) {
 
     // if relId is either RELCAT_RELID or ATTRCAT_RELID:
     //     return E_NOTPERMITTED;
-    if (relId < 0 || relId >= MAX_OPEN) {
+    if (relId == RELCAT_RELID || relId == ATTRCAT_RELID) {
         return E_NOTPERMITTED;
     }
 
@@ -270,6 +270,8 @@ int BPlusTree::bPlusCreate(int relId, char attrName[ATTR_SIZE]) {
     if (rootBlock == E_DISKFULL) {
         return E_DISKFULL;
     }
+    attrCatEntry.rootBlock = rootBlock;
+    AttrCacheTable::setAttrCatEntry(relId, attrName, &attrCatEntry);
 
     RelCatEntry relCatEntry;
 
@@ -419,7 +421,7 @@ int BPlusTree::bPlusInsert(int relId, char attrName[ATTR_SIZE], Attribute attrVa
     //       required internal nodes by calling the required helper functions
     //       like insertIntoInternal() or createNewRoot()
     Index leafEntry{attrVal, recId.block, recId.slot};
-    retVal = insertIntoLeaf(relId, attrName, blockNum, leafEntry);
+    retVal = insertIntoLeaf(relId, attrName, leafBlkNum, leafEntry);
 
     /* if insertIntoLeaf() returns E_DISKFULL */
     if (retVal == E_DISKFULL) {
@@ -565,7 +567,7 @@ int BPlusTree::insertIntoLeaf(int relId, char attrName[ATTR_SIZE], int blockNum,
     }
 
     /* if the current leaf block was not the root */
-    if (blockHeader.pblock == -1) {  // check pblock in header
+    if (blockHeader.pblock != -1) {  // check pblock in header
         // insert the middle value from `indices` into the parent block using the
         // insertIntoInternal() function. (i.e the last value of the left block)
         // the middle value will be at index 31 (given by constant MIDDLE_INDEX_LEAF)
@@ -851,7 +853,7 @@ int BPlusTree::splitInternal(int intBlockNum, InternalEntry internalEntries[]) {
     for (int i = 0; i < rightBlkHeader.numEntries + 1; i++) {
         // declare an instance of BlockBuffer to access the child block using
         // constructor 2
-        RecBuffer childBlk(internalEntries[i + leftBlkHeader.numEntries + 1].lChild);
+        BlockBuffer childBlk(internalEntries[i + leftBlkHeader.numEntries + 1].lChild);
 
         // update pblock of the block to rightBlkNum using BlockBuffer::getHeader()
         // and BlockBuffer::setHeader().
@@ -860,6 +862,15 @@ int BPlusTree::splitInternal(int intBlockNum, InternalEntry internalEntries[]) {
         childHeader.pblock = rightBlkNum;
         childBlk.setHeader(&childHeader);
     }
+
+    // 101th entry is at index 100 of internalEntries array
+    BlockBuffer childBlk(internalEntries[MAX_KEYS_INTERNAL].rChild);
+    // update pblock of the block to rightBlkNum using BlockBuffer::getHeader()
+    // and BlockBuffer::setHeader().
+    HeadInfo childHeader;
+    childBlk.getHeader(&childHeader);
+    childHeader.pblock = rightBlkNum;
+    childBlk.setHeader(&childHeader);
 
     return rightBlkNum;
 }
