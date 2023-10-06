@@ -842,18 +842,26 @@ int BPlusTree::splitInternal(int intBlockNum, InternalEntry internalEntries[]) {
         leftBlk.setEntry(&internalEntries[i], i);
     }
     for (int i = 0; i < rightBlkHeader.numEntries; i++) {
-        rightBlk.setEntry(&internalEntries[i + leftBlkHeader.numEntries + 1], i);
+        rightBlk.setEntry(&internalEntries[i + MIDDLE_INDEX_INTERNAL + 1], i);
     }
 
     /* block type of a child of any entry of the internalEntries array */
     //            (use StaticBuffer::getStaticBlockType())
     int type = StaticBuffer::getStaticBlockType(internalEntries[0].lChild); 
 
-    /* each child block of the new right block */
-    for (int i = 0; i < rightBlkHeader.numEntries + 1; i++) {
+    /* for each child block of the new right block */ 
+    BlockBuffer childBlk (internalEntries[MIDDLE_INDEX_INTERNAL + 1].lChild);
+
+    HeadInfo childHeader;
+    childBlk.getHeader(&childHeader);
+    childHeader.pblock = rightBlkNum;
+    childBlk.setHeader(&childHeader);
+
+    for (int i = 0; i < MIDDLE_INDEX_INTERNAL; i++)
+    {
         // declare an instance of BlockBuffer to access the child block using
         // constructor 2
-        BlockBuffer childBlk(internalEntries[i + leftBlkHeader.numEntries + 1].lChild);
+        BlockBuffer childBlk(internalEntries[i + MIDDLE_INDEX_INTERNAL + 1].rChild);
 
         // update pblock of the block to rightBlkNum using BlockBuffer::getHeader()
         // and BlockBuffer::setHeader().
@@ -862,15 +870,6 @@ int BPlusTree::splitInternal(int intBlockNum, InternalEntry internalEntries[]) {
         childHeader.pblock = rightBlkNum;
         childBlk.setHeader(&childHeader);
     }
-
-    // 101th entry is at index 100 of internalEntries array
-    BlockBuffer childBlk(internalEntries[MAX_KEYS_INTERNAL].rChild);
-    // update pblock of the block to rightBlkNum using BlockBuffer::getHeader()
-    // and BlockBuffer::setHeader().
-    HeadInfo childHeader;
-    childBlk.getHeader(&childHeader);
-    childHeader.pblock = rightBlkNum;
-    childBlk.setHeader(&childHeader);
 
     return rightBlkNum;
 }
