@@ -88,6 +88,7 @@ int Frontend::select_attrlist_from_table_where(char relname_source[ATTR_SIZE], c
 	// return the error code
 	ret = OpenRelTable::openRel(tempRelName);
 	if (ret < 0) {
+		Schema::deleteRel(tempRelName);
 		return ret;
 	}
 
