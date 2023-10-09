@@ -1,0 +1,55 @@
+echo Creating Tables
+echo ---------------
+echo
+CREATE TABLE Events(id NUM, title STR, location STR);
+CREATE TABLE Locations(name STR, capacity NUM);
+CREATE TABLE Participants(regNo NUM, event STR);
+echo Opening Tables
+echo --------------
+echo
+OPEN TABLE Events;
+OPEN TABLE Locations;
+OPEN TABLE Participants;
+echo Inserting Data
+echo --------------
+echo
+INSERT INTO Events VALUES FROM events.csv;
+INSERT INTO Locations VALUES FROM locations.csv;
+INSERT INTO Participants VALUES FROM participants.csv;
+echo
+echo Joining Tables
+echo --------------
+SELECT * FROM Locations JOIN Events INTO EventDetails WHERE Locations.name=Events.location;
+SELECT regNo, event FROM Participants JOIN Events INTO EventPart WHERE Participants.event=Events.title;
+OPEN TABLE EventDetails;
+OPEN TABLE EventPart;
+SELECT * FROM EventPart JOIN EventDetails INTO EventPeople WHERE EventPart.event=EventDetails.title;
+echo Renaming Columns
+echo ----------------
+echo
+CLOSE TABLE EventPart;
+ALTER TABLE RENAME EventPart COLUMN event TO eventName;
+OPEN TABLE EventPart;
+echo Projecting Columns
+echo ------------------
+SELECT name FROM EventDetails INTO EventLocations;
+SELECT * FROM EventPart INTO AudiPeople WHERE eventName=Audi;
+SELECT regNo, event, capacity FROM EventPeople INTO People WHERE capacity>100;
+OPEN TABLE People;
+SELECT regNo, event FROM People INTO MiniEventPeople WHERE capacity<200;
+echo Closing Tables
+echo --------------
+echo
+CLOSE TABLE EventDetails;
+CLOSE TABLE EventPart;
+CLOSE TABLE EventPeople;
+CLOSE TABLE People;
+echo Deleting Tables
+echo ---------------
+echo
+DROP TABLE EventDetails;
+DROP TABLE EventPart;
+DROP TABLE EventPeople;
+DROP TABLE People;
+echo -----------------------------------------------------------
+echo Done

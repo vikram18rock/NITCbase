@@ -94,7 +94,7 @@ int Frontend::select_attrlist_from_table_where(char relname_source[ATTR_SIZE], c
 	// On the TEMP relation, call project() method of the Algebra Layer with
 	// correct arguments to create the actual target relation. The final
 	// target relation contains only those attributes mentioned in attr_list
-	Algebra::project(tempRelName, relname_target, attr_count, attr_list);
+	ret = Algebra::project(tempRelName, relname_target, attr_count, attr_list);
 
 	// close the TEMP relation using OpenRelTable::closeRel()
 	// delete the TEMP relation using Schema::deleteRel()
@@ -102,7 +102,7 @@ int Frontend::select_attrlist_from_table_where(char relname_source[ATTR_SIZE], c
 	Schema::deleteRel(tempRelName);
 
 	// return any error codes from project() or SUCCESS otherwise
-	return SUCCESS;
+	return ret;
 }
 
 int Frontend::select_from_join_where(
@@ -137,6 +137,7 @@ int Frontend::select_attrlist_from_join_where(
     // return the error code
 	int tempRelId = OpenRelTable::openRel(TEMP);
 	if (tempRelId < 0) {
+		Schema::deleteRel(TEMP);
 		return tempRelId;
 	}
 
@@ -145,17 +146,13 @@ int Frontend::select_attrlist_from_join_where(
     // (The final target relation contains only those attributes mentioned in attr_list)
 	ret = Algebra::project(TEMP, relname_target, attr_count, attr_list);
 
-	if (ret != SUCCESS) {
-		return ret;
-	}
-
     // close the TEMP relation using OpenRelTable::closeRel()
     // delete the TEMP relation using Schema::deleteRel()
 	OpenRelTable::closeRel(tempRelId);
 	Schema::deleteRel(TEMP);
 
     // Return Success or Error values appropriately
-	return SUCCESS;
+	return ret;
 }
 
 int Frontend::custom_function(int argc, char argv[][ATTR_SIZE]) {
