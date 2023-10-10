@@ -21,7 +21,7 @@ SELECT * FROM EventPart JOIN EventDetails INTO EventPeople WHERE EventPart.event
 echo Projecting Columns
 echo ------------------
 SELECT name FROM EventDetails INTO EventLocations;
-SELECT * FROM EventPart INTO AudiPeople WHERE location=Audi;
+SELECT regNo, eventName FROM EventPeople INTO AudiPeople WHERE name=Audi;
 SELECT regNo, eventName, capacity FROM EventPeople INTO People WHERE capacity>100;
 OPEN TABLE People;
 SELECT regNo, eventName FROM People INTO MiniEventPeople WHERE capacity<200;
