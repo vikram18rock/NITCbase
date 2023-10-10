@@ -312,7 +312,7 @@ int BlockBuffer::getFreeBlock(int blockType) {
 	int bufferNum = -1;
 	for (int i = 0; i < DISK_BLOCKS; i++) {
 		if (StaticBuffer::blockAllocMap[i] == UNUSED_BLK) {
-			blockNum = i;
+			bufferNum = i;
 			break;
 		}
 	}
