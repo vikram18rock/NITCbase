@@ -1,8 +1,4 @@
-create table Stores(name STR);
-create table People(name NUM, name STR);
-open table Products
-open table Stores
-drop table Stores
-drop table RELATIONCAT
-close table Stores
-drop table Stores
+create table Numbers(key NUM);
+open table Numbers;
+insert into Numbers values from s10nums.csv;
+SELECT * FROM Numbers INTO BigNumbers WHERE key > 165000;

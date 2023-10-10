@@ -91,7 +91,6 @@ int StaticBuffer::getFreeBuffer(int blockNum) {
 
 	// update the metaInfo entry corresponding to bufferNum with
 	// free:false, dirty:false, blockNum:the input block number, timeStamp:0.
-	metainfo[bufferNum].dirty = false;
 	metainfo[bufferNum].free = false;
 	metainfo[bufferNum].dirty = false;
 	metainfo[bufferNum].timeStamp = 0;
@@ -113,7 +112,8 @@ int StaticBuffer::getBufferNum(int blockNum) {
 	// find and return the bufferIndex which corresponds to blockNum (check metainfo)
 	for (int i = 0; i < BUFFER_CAPACITY; i++)
 	{
-		if (!metainfo[i].free && metainfo[i].blockNum == blockNum) {
+		if (!metainfo[i].free && metainfo[i].blockNum == blockNum)
+		{
 			return i;
 		}
 	}
@@ -148,4 +148,16 @@ int StaticBuffer::setDirtyBit(int blockNum) {
 
 	// return SUCCESS
 	return SUCCESS;
+}
+
+int StaticBuffer::getStaticBlockType(int blockNum){
+    // Check if blockNum is valid (non zero and less than number of disk blocks)
+    // and return E_OUTOFBOUND if not valid.
+	if (blockNum >= DISK_BLOCKS || blockNum < 0) {
+		return E_OUTOFBOUND;
+	}
+
+    // Access the entry in block allocation map corresponding to the blockNum argument
+    // and return the block type after type casting to integer.
+	return (int) blockAllocMap[blockNum];
 }
