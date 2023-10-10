@@ -403,21 +403,33 @@ int OpenRelTable::closeRel(int relId) {
 		// Write back to the buffer using relCatBlock.setRecord() with recId.slot
 		relCatBlock.setRecord(record, recId.slot);
 	}
+    // free the memory dynamically alloted to this Relation Cache entry
+    // and assign nullptr to that entry
+	free(RelCacheTable::relCache[relId]);
 
 	/****** Releasing the Attribute Cache entry of the relation ******/
 
 	// free the memory allocated in the attribute caches which was
 	// allocated in the OpenRelTable::openRel() function
-	free(RelCacheTable::relCache[relId]);
 	AttrCacheEntry* entry = AttrCacheTable::attrCache[relId], * temp = nullptr;
 	while (entry) {
+		// if the entry has been modified:
+		if (entry->dirty) {
+            /* Get the Attribute Catalog entry from attrCache
+             Then convert it to a record using AttrCacheTable::attrCatEntryToRecord().
+             Write back that entry by instantiating RecBuffer class. Use recId
+             member field and recBuffer.setRecord() */
+			Attribute rec[ATTRCAT_NO_ATTRS];
+			AttrCacheTable::attrCatEntryToRecord(&entry->attrCatEntry, rec);
+			
+			RecBuffer attrCatBlk(entry->recId.block);
+			attrCatBlk.setRecord(rec, entry->recId.slot);
+        }
+
 		temp = entry;
 		entry = entry->next;
 		free(temp);
 	}
-	// (because we are not modifying the attribute cache at this stage,
-	// write-back is not required. We will do it in subsequent
-	// stages when it becomes needed)
 
 	/****** Set the Open Relation Table entry of the relation as free ******/
 	RelCacheTable::relCache[relId] = nullptr;
