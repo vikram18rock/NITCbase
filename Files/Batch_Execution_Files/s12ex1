@@ -1,0 +1,4 @@
+CREATE TABLE EventRating(id NUM, title STR, rating NUM);
+SELECT * FROM Events JOIN EventRating INTO LocRating WHERE Events.id = EventRating.id;
+SELECT * FROM Events JOIN EventRating INTO LocRating WHERE Events.id = EventRating.name;
+SELECT * FROM Events JOIN EventRating INTO LocRating WHERE Events.id = EventRating.title;

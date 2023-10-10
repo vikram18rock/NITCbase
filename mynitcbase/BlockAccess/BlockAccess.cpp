@@ -625,7 +625,7 @@ int BlockAccess::deleteRelation(char relName[ATTR_SIZE]) {
     //
     //     Hint: to know if we reached the end, check if nextBlock = -1
     for (; firstBlock != -1;) {
-        relCatBlock = RecBuffer(firstBlock);
+        RecBuffer relCatBlock(firstBlock);
         HeadInfo head;
         relCatBlock.getHeader(&head);
         relCatBlock.releaseBlock();

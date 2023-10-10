@@ -91,7 +91,7 @@ int Schema::renameAttr(char* relName, char* oldAttrName, char* newAttrName) {
 		//    (check if OpenRelTable::getRelId() returns E_RELNOTOPEN)
 		//    return E_RELOPEN
 	int retVal = OpenRelTable::getRelId(relName);
-	if (retVal == E_RELOPEN) {
+	if (retVal != E_RELNOTOPEN) {
 		return E_RELOPEN;
 	}
 
