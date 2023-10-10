@@ -1,0 +1,7 @@
+create table Toys(id NUM, name STR, colour STR, stock NUM)
+open table Toys
+insert into Toys values from toys.csv
+select * from Toys into Copy
+SELECT id,name FROM Toys INTO BlueToys WHERE colour = blue;
+exit
+

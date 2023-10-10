@@ -1,5 +1,8 @@
-alter table rename LibBooks to Books;
-alter table rename LibraryBooks to Students;
-alter table rename LibraryBooks to RELATIONCAT;
-open table LibraryBooks;
-alter table rename LibraryBooks to LibBooks;
+create table Stores(name STR);
+create table People(name NUM, name STR);
+open table Products
+open table Stores
+drop table Stores
+drop table RELATIONCAT
+close table Stores
+drop table Stores
