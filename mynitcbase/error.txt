@@ -1,0 +1,2 @@
+g++  -o nitcbase ./build/main.o ./build/FrontendInterface/FrontendInterface.o ./build/Frontend/Frontend.o ./build/Algebra/Algebra.o ./build/Schema/Schema.o ./build/BlockAccess/BlockAccess.o ./build/BPlusTree/BPlusTree.o ./build/Cache/AttrCacheTable.o ./build/Cache/OpenRelTable.o ./build/Cache/RelCacheTable.o ./build/Buffer/BlockBuffer.o ./build/Buffer/StaticBuffer.o ./build/Disk_Class/Disk.o -lreadline
+make

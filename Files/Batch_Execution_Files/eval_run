@@ -1,0 +1,19 @@
+echo
+echo Creating Tables
+CREATE TABLE Employees(EmployeeID NUM, FirstName STR, LastName STR, Department STR);
+CREATE TABLE Salaries(EmployeeID NUM, Salary NUM);
+echo ---------------------------------------------
+echo Opening Tables
+OPEN TABLE Employees;
+OPEN TABLE Salaries;
+echo
+echo Inserting
+INSERT INTO Employees VAlUES FROM employees.csv
+INSERT INTO Salaries VAlUES FROM salary.csv
+echo Joining
+SELECT * FROM Employees JOIN Salaries INTO EmployeeSal WHERE Employees.EmployeeID=Salaries.EmployeeID;
+OPEN TABLE EmployeeSal
+SELECT * FROM EmployeeSal INTO eqSalary WHERE Salary=47667;
+SELECT * FROM EmployeeSal INTO MoreSalary WHERE Salary>79900;
+CLOSE TABLE EmployeeSal;
+DROP TABLE EmployeeSal;
