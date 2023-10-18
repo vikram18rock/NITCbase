@@ -725,6 +725,9 @@ int BlockAccess::deleteRelation(char relName[ATTR_SIZE]) {
             //  every block of the attribute catalog gets released.)
 
             // call releaseBlock()
+            attrCatRecId.block = head.rblock;
+            attrCatRecId.slot = -1;
+            RelCacheTable::setSearchIndex(ATTRCAT_RELID, &attrCatRecId);
             attrCatBlock.releaseBlock();
         }
 
