@@ -1,17 +1,35 @@
 {
-    "tasks": [
-      {
-        "type": "shell",
-        "label": "Build debug nitcbase",
-        "command": "/usr/bin/make",
-        "args": ["mode=debug"],
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "options": {
-          "cwd": "${workspaceFolder}/mynitcbase"
-        }
-      }
-    ]
-  }
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Build debug nitcbase",
+			"command": "/usr/bin/make",
+			"args": [
+				"mode=debug"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/mynitcbase"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Build debug xfs-interface",
+			"command": "/usr/bin/make",
+			"args": [
+				"debug"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/Xfs_Interface"
+			}
+		}
+	]
+}

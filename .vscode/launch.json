@@ -20,6 +20,26 @@
         ],
         "preLaunchTask": "Build debug nitcbase",
         "miDebuggerPath": "/usr/bin/gdb"
+      },
+      {
+        "name": "Debug xfs-interface",
+        "cwd": "${workspaceFolder}",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/Xfs_Interface/xfs-interface-debug",
+        "stopAtEntry": false,
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+          {
+            "description": "Enable pretty-printing for gdb",
+            "text": "-enable-pretty-printing",
+            "ignoreFailures": true
+          }
+        ],
+        "preLaunchTask": "Build debug xfs-interface",
+        "miDebuggerPath": "/usr/bin/gdb"
       }
     ]
   }
