@@ -2,6 +2,8 @@
 
 NITCbase is an object-oriented implementation of a relational database management system (RDBMS) created as part of a college project.
 
+![NITCbase Logo](https://github.com/NITCbase/nitcbase.github.io/raw/main/static/img/FrontBannerLogo.png)
+
 ## Overview
 
 NITCbase offers a user-friendly interface to interact with the RDBMS. You can explore the list of available commands and features in the [User Interface Commands Documentation](https://nitcbase.github.io/docs/User%20Interface%20Commands/).
