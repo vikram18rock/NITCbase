@@ -39,7 +39,7 @@ To get started with NITCbase, follow these installation steps:
 
 Once the installation is complete, you can use NITCbase to interact with the RDBMS. NITCbase provides a user-friendly command-line interface to work with relational databases. You can refer to the [User Interface Commands Documentation](https://nitcbase.github.io/docs/User%20Interface%20Commands/) to learn about the available commands and their usage.
 
-For detailed usage instructions and information about the XFS interface, please refer to the [Xfs Interface README](Xfs_Interface/README.md). You can find instructions on how to build, clean, and debug the XFS interface there.
+For detailed usage instructions and information about the XFS interface, please refer to the [Xfs Interface README](XFS_Interface/README.md). You can find instructions on how to build, clean, and debug the XFS interface there.
 
 Be aware that the XFS interface operates directly on the disk without creating a run copy.
 
@@ -48,7 +48,7 @@ Be aware that the XFS interface operates directly on the disk without creating a
 - [`Disk/`](Disk): Contains binary files disk and disk_run_copy.
 - [`Files/`](Files): Contains the input and output files. You can also write scripts in the Batch_exec_files folder to execute multiple commands at once.
 - [`mynitcbase/`](mynitcbase): The main project directory.
-- [`Xfs_Interface/`](Xfs_Interface): Contains the source code for the XFS interface.
+- [`XFS_Interface/`](XFS_Interface): Contains the source code for the XFS interface.
 
 ## Contributing
 
