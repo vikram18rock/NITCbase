@@ -33,7 +33,7 @@ To get started with NITCbase, follow these installation steps:
     You can also use the following make options:
     
     - `make clean`: Clean up the project.
-    - `make debug`: Create a debuggable version.
+    - `make mode=debug`: Create a debuggable version.
 
 ## Usage
 
