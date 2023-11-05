@@ -1,5 +1,11 @@
+# ignoring build folder
 build
+
+# ignoring executables
 nitcbase
 nitcbase-debug
+xfs-interface-debug
+
+# ignoring vs code config files and folders
 .vscode
 *.json
